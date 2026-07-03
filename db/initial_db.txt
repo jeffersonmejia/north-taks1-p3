@@ -1,0 +1,16 @@
+1. Create databases
+createdb northwind
+createdb northwind_identity
+
+2. Create application user
+psql -d northwind          -f db/credentials.sql
+psql -d northwind_identity -f db/credentials.sql
+
+3. Load schema
+psql -d northwind -f db/schema.sql
+
+4. Load seed data
+psql -d northwind -f db/seed.sql
+
+5. Create performance indexes
+psql -d northwind -f db/index.sql
