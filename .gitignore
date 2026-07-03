@@ -1,0 +1,56 @@
+# Build output
+bin/
+obj/
+out/
+publish/
+artifacts/
+
+# .NET local state
+.dotnet/
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+
+# User and IDE files
+.vs/
+.idea/
+.vscode/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Local configuration and secrets
+appsettings.Local.json
+appsettings.*.local.json
+*.Development.local.json
+secrets.json
+Secrets/secrets.json
+.env
+.env.*
+!.env.example
+
+# Logs and diagnostics
+*.log
+logs/
+*.dmp
+*.mdmp
+
+# Package and publish leftovers
+*.nupkg
+*.snupkg
+*.zip
+*.tar.gz
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Runtime/generated files
+*.pid
+*.tmp
+*.temp
+
+# Project documentation (not required for build)
+requirements.md
