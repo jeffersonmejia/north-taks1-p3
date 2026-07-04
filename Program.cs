@@ -1,4 +1,4 @@
-using NorthwindStore.Extensions;
+using NorthwindStore.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 

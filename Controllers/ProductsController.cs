@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using NorthwindStore.Interfaces;
+using NorthwindStore.Repositories;
+using NorthwindStore.Services;
 
 namespace NorthwindStore.Controllers;
 

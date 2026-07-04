@@ -3,11 +3,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NorthwindStore.Data;
-using NorthwindStore.Helpers;
-using NorthwindStore.Interfaces;
+using NorthwindStore.Infrastructure;
+using NorthwindStore.Repositories;
+using NorthwindStore.Services;
 using NorthwindStore.Models.Identity;
 using NorthwindStore.Models.Northwind;
-using NorthwindStore.ViewModels.Auth;
+using NorthwindStore.Models.ViewModels.Auth;
 using System.Security.Claims;
 
 namespace NorthwindStore.Controllers;

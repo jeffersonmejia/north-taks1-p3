@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using NorthwindStore.Data;
-using NorthwindStore.Helpers;
-using NorthwindStore.Interfaces;
-using NorthwindStore.ViewModels.Admin;
+using NorthwindStore.Infrastructure;
+using NorthwindStore.Repositories;
+using NorthwindStore.Models.ViewModels.Admin;
 
 namespace NorthwindStore.Services;
 

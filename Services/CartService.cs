@@ -1,6 +1,6 @@
-using NorthwindStore.Helpers;
-using NorthwindStore.Interfaces;
-using NorthwindStore.ViewModels.Cart;
+using NorthwindStore.Infrastructure;
+using NorthwindStore.Repositories;
+using NorthwindStore.Models.ViewModels.Cart;
 
 namespace NorthwindStore.Services;
 

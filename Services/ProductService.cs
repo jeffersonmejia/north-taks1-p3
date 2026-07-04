@@ -1,5 +1,5 @@
-using NorthwindStore.Interfaces;
-using NorthwindStore.ViewModels.Products;
+using NorthwindStore.Repositories;
+using NorthwindStore.Models.ViewModels.Products;
 
 namespace NorthwindStore.Services;
 

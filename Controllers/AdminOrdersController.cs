@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using NorthwindStore.Helpers;
-using NorthwindStore.Interfaces;
+using NorthwindStore.Infrastructure;
+using NorthwindStore.Repositories;
+using NorthwindStore.Services;
 
 namespace NorthwindStore.Controllers;
 

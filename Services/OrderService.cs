@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using NorthwindStore.Data;
-using NorthwindStore.Interfaces;
+using NorthwindStore.Repositories;
 using NorthwindStore.Models.Identity;
 using NorthwindStore.Models.Northwind;
-using NorthwindStore.ViewModels.Orders;
+using NorthwindStore.Models.ViewModels.Orders;
 
 namespace NorthwindStore.Services;
 

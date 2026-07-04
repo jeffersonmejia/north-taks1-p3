@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Identity;
-using NorthwindStore.Helpers;
+using NorthwindStore.Infrastructure;
 using NorthwindStore.Models.Identity;
 
 namespace NorthwindStore.Data;

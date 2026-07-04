@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using NorthwindStore.Data;
-using NorthwindStore.Interfaces;
+
 using NorthwindStore.Models.Common;
 using NorthwindStore.Models.Northwind;
 
