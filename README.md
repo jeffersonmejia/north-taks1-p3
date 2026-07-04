@@ -26,16 +26,37 @@ Business logic is kept in services and repositories instead of controllers. The 
 * Git
 * GitHub
 
-# 3. Installation
+# 3. Architecture
 
-## 3.1 Clone the repository
+Layered Architecture with Repository + Service pattern. Data flows one-way:
+
+```
+Views/Controllers  →  Services  →  Repositories  →  Data/DbContext  →  PostgreSQL
+```
+
+Each layer depends only on the one below. Cross-cutting concerns (caching, auth, session) live in `Infrastructure/`.
+
+| Layer | Folder | Responsibility |
+|---|---|---|
+| Presentation | `Controllers/`, `Views/`, `Models/ViewModels/` | HTTP handling, UI, DTOs |
+| Application | `Services/` | Business logic, caching, orchestration |
+| Data Access | `Repositories/` | LINQ queries, persistence |
+| Persistence | `Data/` | DbContexts, migrations, seeders |
+| Domain | `Models/Northwind/`, `Models/Identity/` | Entities and identity |
+| Infrastructure | `Infrastructure/` | Middleware, filters, extensions, helpers |
+
+All service and repository interfaces sit next to their implementations.
+
+# 4. Installation
+
+## 4.1 Clone the repository
 
 ```bash
 git clone <repository-url>
 cd <repository-folder>
 ```
 
-## 3.2 Create the application database user
+## 4.2 Create the application database user
 
 Run the credentials script against both databases:
 
@@ -46,7 +67,7 @@ psql -d northwind_identity -f db/credentials.sql
 
 This creates the `jef` role with a hashed password and grants the required privileges.
 
-## 3.3 Configure database credentials
+## 4.3 Configure database credentials
 
 The application reads PostgreSQL credentials from `Secrets/secrets.json`. The file is already prepared for the local setup:
 
@@ -61,15 +82,15 @@ The application reads PostgreSQL credentials from `Secrets/secrets.json`. The fi
 
 `Secrets/secrets.json` is listed in `.gitignore` so it stays local and is never committed. `appsettings.json` does not store database passwords. Connection pooling is enabled in the connection strings with `Pooling=true`, `Minimum Pool Size`, `Maximum Pool Size`, and `Connection Idle Lifetime`.
 
-## 3.4 Restore packages
+## 4.4 Restore packages
 
 ```bash
 dotnet restore
 ```
 
-## 3.5 Prepare PostgreSQL
+## 4.5 Prepare PostgreSQL
 
-### 3.5.1 Install PostgreSQL on Debian
+### 4.5.1 Install PostgreSQL on Debian
 
 ```bash
 sudo apt update
@@ -83,7 +104,7 @@ Switch to the `postgres` user and set a password for the initial superuser:
 sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'postgres';"
 ```
 
-### 3.5.2 Install PostgreSQL on Windows
+### 4.5.2 Install PostgreSQL on Windows
 
 1. Download the installer from [https://www.postgresql.org/download/windows/](https://www.postgresql.org/download/windows/).
 2. Run the installer and follow the wizard. When prompted:
@@ -93,7 +114,7 @@ sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'postgres';"
 
 Enable `psql` in the terminal by adding PostgreSQL's `bin` directory to your `PATH` (typically `C:\Program Files\PostgreSQL\17\bin`).
 
-### 3.5.3 Create the databases and load the schema
+### 4.5.3 Create the databases and load the schema
 
 Create the Northwind and Identity databases:
 
@@ -110,7 +131,7 @@ psql -d northwind -f db/seed.sql
 psql -d northwind -f db/index.sql
 ```
 
-### 3.5.4 Scaffold the models (Database First)
+### 4.5.4 Scaffold the models (Database First)
 
 Generate the Northwind models from the live PostgreSQL database:
 
@@ -120,7 +141,7 @@ dotnet ef dbcontext scaffold "Host=localhost;Port=5432;Database=northwind;Userna
 
 After scaffolding, keep the soft-delete columns from `db/schema.sql`. The app uses query filters for `is_deleted`, `deleted_at`, and `deleted_by`.
 
-### 3.5.5 Database indexes
+### 4.5.5 Database indexes
 
 Performance indexes are defined in `db/index.sql` (run separately after the schema). They include:
 
@@ -135,7 +156,7 @@ Performance indexes are defined in `db/index.sql` (run separately after the sche
 
 The trigram index requires the `pg_trgm` extension, which is enabled by `db/index.sql`.
 
-## 3.6 Run the project
+## 4.6 Run the project
 
 ```bash
 dotnet run
@@ -149,7 +170,7 @@ dotnet watch run
 
 When the app starts, `IdentitySeeder` creates the `Admin`, `Customer`, and `Employee` roles. `Employee` is kept for compatibility with previous academic work; this project protects the required routes with `Admin` and `Customer`.
 
-## 3.7 Publish in Release mode
+## 4.7 Publish in Release mode
 
 ```bash
 dotnet publish -c Release -o ./publish
