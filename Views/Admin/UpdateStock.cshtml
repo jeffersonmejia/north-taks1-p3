@@ -1,0 +1,22 @@
+@model StockUpdateViewModel
+@{
+    ViewData["Title"] = "Update stock";
+}
+<section class="glass-panel narrow">
+    <h1>@Model.ProductName</h1>
+    <p>Current stock: <strong>@Model.CurrentStock</strong></p>
+    @if (Model.NewStock is not null)
+    {
+        <p class="badge success">New stock: @Model.NewStock</p>
+    }
+    <form asp-action="UpdateStock" method="post" class="stack-form">
+        <input type="hidden" asp-for="ProductId" />
+        <input type="hidden" asp-for="ProductName" />
+        <input type="hidden" asp-for="CurrentStock" />
+        <input type="hidden" asp-for="Operation" />
+        <label asp-for="Quantity"></label>
+        <input asp-for="Quantity" type="number" min="1" step="1" />
+        <span asp-validation-for="Quantity" class="validation"></span>
+        <button class="btn btn-primary" type="submit">@Model.Operation stock</button>
+    </form>
+</section>

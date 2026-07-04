@@ -1,0 +1,9 @@
+@model InventoryReportViewModel
+@{
+    ViewData["Title"] = "Low stock";
+}
+<section class="glass-panel">
+    <h1>@Model.Title</h1>
+    <partial name="_InventoryTable" model="Model" />
+    <partial name="_Pagination" model="Model" />
+</section>

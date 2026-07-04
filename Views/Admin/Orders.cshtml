@@ -1,0 +1,28 @@
+@model OrderListViewModel
+@{
+    ViewData["Title"] = "All orders";
+}
+<section class="glass-panel">
+    <h1>Customer purchases</h1>
+    <div class="table-wrap">
+        <table class="admin-table">
+            <thead>
+                <tr><th>Order</th><th>Customer</th><th>Date</th><th>Products</th><th>Total</th><th></th></tr>
+            </thead>
+            <tbody>
+            @foreach (var order in Model.Orders)
+            {
+                <tr>
+                    <td>#@order.OrderId</td>
+                    <td>@order.CustomerId</td>
+                    <td>@order.OrderDate?.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</td>
+                    <td>@order.TotalProducts</td>
+                    <td>@order.Total.ToString("C")</td>
+                    <td><a class="btn btn-ghost" asp-action="Details" asp-route-id="@order.OrderId">Open</a></td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+    <partial name="_Pagination" model="Model" />
+</section>
