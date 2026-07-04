@@ -1,0 +1,8 @@
+.ambient { position: fixed; inset: 0; pointer-events: none; backdrop-filter: saturate(130%); }
+.shell { width: min(1180px, calc(100% - 32px)); margin: 0 auto; padding: 32px 0 60px; }
+.hero { display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: end; margin-bottom: 24px; }
+.narrow { max-width: 620px; margin-inline: auto; }
+.toolbar, .summary-bar, .card-actions, .action-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.summary-bar { justify-content: flex-end; margin-top: 20px; }
+.stack-form { display: grid; gap: 12px; }
+.inline-form { display: inline-flex; gap: 10px; align-items: center; }

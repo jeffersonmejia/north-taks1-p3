@@ -1,0 +1,9 @@
+.alert {
+  margin-bottom: 18px;
+  padding: 14px 16px;
+  border-radius: var(--radius);
+  border: 1px solid var(--stroke);
+  animation: alertIn 260ms ease;
+}
+.alert-success { background: rgba(120, 224, 143, 0.16); }
+.alert-error { background: rgba(255, 107, 107, 0.16); }

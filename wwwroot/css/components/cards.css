@@ -1,0 +1,3 @@
+.glass-card h2 { min-height: 48px; }
+.glass-card:hover { transform: translateY(-5px); background: var(--panel-strong); }
+.glass-card { transition: transform 200ms ease, background 200ms ease; }

@@ -1,0 +1,17 @@
+.btn {
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 16px;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  color: var(--text);
+  font-weight: 800;
+  transition: transform 180ms ease, background 180ms ease, border 180ms ease;
+}
+.btn:hover { transform: translateY(-2px); }
+.btn-primary { background: linear-gradient(135deg, var(--primary), #8cf4bc); color: #102027; }
+.btn-ghost { background: rgba(255, 255, 255, 0.08); border-color: var(--stroke); }
+.btn-danger { background: rgba(255, 107, 107, 0.18); color: #ffdede; border-color: rgba(255, 107, 107, 0.32); }

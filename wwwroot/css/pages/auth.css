@@ -1,0 +1,2 @@
+.auth-wrap { min-height: calc(100vh - 160px); display: grid; place-items: center; }
+.auth-card { width: min(460px, 100%); display: grid; gap: 14px; }

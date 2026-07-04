@@ -1,0 +1,16 @@
+label { color: var(--muted); font-weight: 700; }
+input, select {
+  min-height: 42px;
+  width: 100%;
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text);
+  padding: 0 12px;
+  outline: none;
+}
+input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(94, 234, 212, 0.18); }
+.qty { width: 82px; }
+.check-line { display: flex; align-items: center; gap: 10px; }
+.check-line input { width: auto; min-height: auto; }
+.validation { color: #ffd1d1; font-size: 0.9rem; animation: validationShake 280ms ease; }
