@@ -73,6 +73,7 @@ public class DbExceptionHandlingMiddleware
                 </head>
                 <body>
                     <div class="card">
+                        <img src="/images/service_unavailable.avif" alt="" style="width:120px;height:auto;margin-bottom:20px;">
                         <div class="spinner"></div>
                         <p><strong>Loading...</strong></p>
                         <p style="margin-top:12px;font-size:0.9rem;color:#666;">The service is temporarily unavailable. Please try again later.</p>

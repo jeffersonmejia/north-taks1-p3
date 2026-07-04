@@ -189,7 +189,7 @@ Logging is configured with **Serilog** in `Program.cs` using two sinks:
 | Output | Configuration |
 |---|---|
 | Console | `.WriteTo.Console()` |
-| Rolling file | `.WriteTo.File("logs/app-.log", ...)` |
+| Rolling file (JSON) | `.WriteTo.File(new CompactJsonFormatter(), "logs/app-.json", ...)` |
 
 File rolling policy:
 
@@ -199,3 +199,27 @@ File rolling policy:
 | `fileSizeLimitBytes` | 10 MB | Rotates early if a file exceeds this size |
 | `rollOnFileSizeLimit` | `true` | Enables size-based rotation in addition to daily |
 | `retainedFileCountLimit` | 7 | Keeps only the last 7 files, older ones are deleted automatically |
+
+File format (compact JSON, one event per line):
+
+| Property | Description |
+|---|---|
+| `@t` | Timestamp (ISO 8601) |
+| `@mt` | Message template |
+| `@l` | Level (`INF`, `WRN`, `ERR`, `FTL`) |
+| `@x` | Exception details (present on errors) |
+| `@m` | Rendered message |
+
+Example line:
+```json
+{"@t":"2026-07-04T15:29:46.316Z","@mt":"Database operation failed","@l":"ERROR","@x":"Npgsql.PostgresException: 42501: permission denied..."}
+```
+
+Query examples:
+```bash
+# Filter errors only
+jq 'select(.["@l"] == "ERR")' logs/app-*.json
+
+# Search for a specific message
+jq 'select(.["@mt"] | test("product"))' logs/app-*.json
+```

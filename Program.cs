@@ -1,9 +1,11 @@
 using NorthwindStore.Infrastructure;
 using Serilog;
+using Serilog.Formatting.Compact;
 
 Log.Logger = new LoggerConfiguration()
-    .WriteTo.Console()
-    .WriteTo.File("logs/app-.log",
+    .MinimumLevel.Information()
+    .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}")
+    .WriteTo.File(new CompactJsonFormatter(), "logs/app-.json",
         rollingInterval: RollingInterval.Day,
         fileSizeLimitBytes: 10L * 1024 * 1024,
         retainedFileCountLimit: 7,
