@@ -1,0 +1,43 @@
+@model ProductListViewModel
+@{
+    ViewData["Title"] = "Products";
+}
+<section class="hero glass-panel">
+    <div>
+        <p class="eyebrow">Northwind catalog</p>
+        <h1>Products ready for purchase</h1>
+    </div>
+    <form class="toolbar" method="get">
+        <input name="search" value="@Model.Search" placeholder="Search product" />
+        <select name="sort">
+            <option value="">Name</option>
+            <option value="name_desc">Name desc</option>
+            <option value="price">Price</option>
+            <option value="price_desc">Price desc</option>
+        </select>
+        <button class="btn btn-primary" type="submit">Filter</button>
+    </form>
+</section>
+<section class="product-grid">
+    @foreach (var product in Model.Products)
+    {
+        <article class="product-card glass-card fade-in">
+            <h2>@product.Name</h2>
+            <p class="price">@product.UnitPrice.ToString("C")</p>
+            <p>Stock: @product.Stock</p>
+            <div class="card-actions">
+                <a class="btn btn-ghost" asp-action="Details" asp-route-id="@product.ProductId">Details</a>
+                @if (User.Identity?.IsAuthenticated == true && User.IsInRole(RoleNames.Customer))
+                {
+                    <form asp-controller="Cart" asp-action="Add" method="post" class="inline-form">
+                        <input type="hidden" name="productId" value="@product.ProductId" />
+                        <input class="qty" type="number" name="quantity" min="1" max="@product.Stock" step="1" value="1" />
+                        <button class="btn btn-primary add-cart" type="submit">Add</button>
+                    </form>
+                }
+            </div>
+        </article>
+    }
+</section>
+
+<partial name="_Pagination" model="Model" />

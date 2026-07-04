@@ -1,0 +1,27 @@
+@model ProductListItemViewModel
+@{
+    ViewData["Title"] = Model.Name;
+}
+<section class="glass-panel narrow fade-in">
+    <p class="eyebrow">Product detail</p>
+    <h1>@Model.Name</h1>
+    <p class="price">@Model.UnitPrice.ToString("C")</p>
+    <p>Available stock: @Model.Stock</p>
+    @if (Model.Discontinued)
+    {
+        <p class="badge danger">Discontinued</p>
+    }
+    else if (Model.Stock <= 0)
+    {
+        <p class="badge danger">Out of stock</p>
+    }
+    @if (User.Identity?.IsAuthenticated == true && User.IsInRole(RoleNames.Customer) && Model.IsAvailable)
+    {
+        <form asp-controller="Cart" asp-action="Add" method="post" class="stack-form">
+            <input type="hidden" name="productId" value="@Model.ProductId" />
+            <label>Quantity</label>
+            <input type="number" name="quantity" min="1" max="@Model.Stock" step="1" value="1" />
+            <button class="btn btn-primary" type="submit">Add to cart</button>
+        </form>
+    }
+</section>

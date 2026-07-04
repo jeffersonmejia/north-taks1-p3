@@ -1,0 +1,34 @@
+@model dynamic
+@{
+    var page = (int)Model.Page;
+    var totalPages = (int)Model.TotalPages;
+    if (totalPages <= 1) return;
+
+    string BuildUrl(int p)
+    {
+        var q = Context.Request.Query.ToDictionary(x => x.Key, x => x.Value.ToString());
+        q["page"] = p.ToString();
+        return "?" + string.Join("&", q.Select(kv => $"{Uri.EscapeDataString(kv.Key)}={Uri.EscapeDataString(kv.Value)}"));
+    }
+}
+<nav class="pagination">
+    @if (page > 1)
+    {
+        <a class="btn btn-ghost" href="@BuildUrl(page - 1)">Previous</a>
+    }
+    @for (var i = 1; i <= totalPages; i++)
+    {
+        if (i == page)
+        {
+            <span class="pagination-current">@i</span>
+        }
+        else
+        {
+            <a class="btn btn-ghost" href="@BuildUrl(i)">@i</a>
+        }
+    }
+    @if (page < totalPages)
+    {
+        <a class="btn btn-ghost" href="@BuildUrl(page + 1)">Next</a>
+    }
+</nav>

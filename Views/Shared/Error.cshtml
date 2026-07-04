@@ -1,0 +1,9 @@
+@model string
+@{
+    ViewData["Title"] = "Error";
+}
+<section class="glass-panel narrow fade-in">
+    <h1>Something went wrong</h1>
+    <p>The operation could not be completed. Reference: @Model</p>
+    <a class="btn btn-primary" asp-controller="Products" asp-action="Index">Back to products</a>
+</section>
