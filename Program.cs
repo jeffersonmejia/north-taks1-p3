@@ -7,7 +7,7 @@ builder.Services.AddNorthwindStore(builder.Configuration);
 
 var app = builder.Build();
 
-await app.SeedIdentityAsync();
 app.UseNorthwindStorePipeline();
 
+await app.SeedIdentityAsync();
 app.Run();

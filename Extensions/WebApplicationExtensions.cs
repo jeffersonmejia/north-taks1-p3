@@ -7,18 +7,28 @@ public static class WebApplicationExtensions
 {
     public static async Task SeedIdentityAsync(this WebApplication app)
     {
-        using var scope = app.Services.CreateScope();
-        await IdentitySeeder.SeedAsync(scope.ServiceProvider);
+        try
+        {
+            using var scope = app.Services.CreateScope();
+            await IdentitySeeder.SeedAsync(scope.ServiceProvider);
+        }
+        catch (Exception ex)
+        {
+            app.Logger.LogWarning(ex, "Identity seeding skipped — database may be unavailable");
+        }
     }
 
     public static WebApplication UseNorthwindStorePipeline(this WebApplication app)
     {
+        app.UseExceptionHandler("/Status/Error");
+        app.UseStatusCodePagesWithReExecute("/Status/Error");
+
         if (!app.Environment.IsDevelopment())
         {
-            app.UseExceptionHandler("/Home/Error");
             app.UseHsts();
         }
 
+        app.UseMiddleware<DbExceptionHandlingMiddleware>();
         app.UseHttpsRedirection();
         app.UseStaticFiles();
         app.UseRouting();
