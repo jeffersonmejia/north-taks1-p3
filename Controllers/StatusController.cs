@@ -19,7 +19,7 @@ public class StatusController : Controller
             {
                 TraceId = Activity.Current?.Id ?? HttpContext.TraceIdentifier,
                 IsDbError = true,
-                Message = "We couldn't connect to the database. Please verify that PostgreSQL is running and the connection settings in Secrets/secrets.json are correct."
+                Message = "The service is temporarily unavailable. Please try again later."
             });
         }
 
@@ -40,7 +40,7 @@ public class StatusController : Controller
         {
             TraceId = Activity.Current?.Id ?? HttpContext.TraceIdentifier,
             IsDbError = true,
-            Message = "The database is currently unavailable. The application started in reduced mode. Please check your database connection and try again."
+                Message = "The service is temporarily unavailable. Please try again later."
         });
     }
 }

@@ -1,13 +1,36 @@
 using NorthwindStore.Infrastructure;
+using Serilog;
 
-var builder = WebApplication.CreateBuilder(args);
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .WriteTo.File("logs/app-.log",
+        rollingInterval: RollingInterval.Day,
+        fileSizeLimitBytes: 10L * 1024 * 1024,
+        retainedFileCountLimit: 7,
+        rollOnFileSizeLimit: true)
+    .Enrich.FromLogContext()
+    .CreateLogger();
 
-builder.Configuration.AddProjectSecrets();
-builder.Services.AddNorthwindStore(builder.Configuration);
+try
+{
+    var builder = WebApplication.CreateBuilder(args);
+    builder.Host.UseSerilog();
 
-var app = builder.Build();
+    builder.Configuration.AddProjectSecrets();
+    builder.Services.AddNorthwindStore(builder.Configuration);
 
-app.UseNorthwindStorePipeline();
+    var app = builder.Build();
 
-await app.SeedIdentityAsync();
-app.Run();
+    app.UseNorthwindStorePipeline();
+
+    await app.EnsureDatabasesAsync();
+    app.Run();
+}
+catch (Exception ex)
+{
+    Log.Fatal(ex, "Application terminated unexpectedly");
+}
+finally
+{
+    Log.CloseAndFlush();
+}

@@ -1,20 +1,22 @@
 using NorthwindStore.Data;
-using NorthwindStore.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 
 namespace NorthwindStore.Infrastructure;
 
 public static class WebApplicationExtensions
 {
-    public static async Task SeedIdentityAsync(this WebApplication app)
+    public static async Task EnsureDatabasesAsync(this WebApplication app)
     {
         try
         {
             using var scope = app.Services.CreateScope();
+            var identityDb = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            await identityDb.Database.EnsureCreatedAsync();
             await IdentitySeeder.SeedAsync(scope.ServiceProvider);
         }
         catch (Exception ex)
         {
-            app.Logger.LogWarning(ex, "Identity seeding skipped — database may be unavailable");
+            app.Logger.LogWarning(ex, "Database initialization skipped — app will run in reduced mode");
         }
     }
 

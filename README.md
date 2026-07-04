@@ -181,3 +181,21 @@ The `publish` folder contains the compiled application. Run it with:
 ```bash
 dotnet ./publish/NorthwindStore.dll
 ```
+
+# 5. Logging
+
+Logging is configured with **Serilog** in `Program.cs` using two sinks:
+
+| Output | Configuration |
+|---|---|
+| Console | `.WriteTo.Console()` |
+| Rolling file | `.WriteTo.File("logs/app-.log", ...)` |
+
+File rolling policy:
+
+| Setting | Value | Description |
+|---|---|---|
+| `rollingInterval` | `Day` | Creates a new file each day (`app-20260704.log`) |
+| `fileSizeLimitBytes` | 10 MB | Rotates early if a file exceeds this size |
+| `rollOnFileSizeLimit` | `true` | Enables size-based rotation in addition to daily |
+| `retainedFileCountLimit` | 7 | Keeps only the last 7 files, older ones are deleted automatically |
