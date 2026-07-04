@@ -1,0 +1,9 @@
+@model OrderDetailViewModel
+@{
+    ViewData["Title"] = "Order summary";
+}
+<section class="glass-panel confirmation fade-in">
+    <p class="eyebrow">Purchase confirmed</p>
+    <h1>Order #@Model.OrderId</h1>
+    <partial name="_OrderDetails" model="Model" />
+</section>

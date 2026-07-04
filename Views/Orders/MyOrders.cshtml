@@ -1,0 +1,9 @@
+@model OrderListViewModel
+@{
+    ViewData["Title"] = "My orders";
+}
+<section class="glass-panel">
+    <h1>My orders</h1>
+    <partial name="_OrdersTable" model="Model" />
+    <partial name="_Pagination" model="Model" />
+</section>

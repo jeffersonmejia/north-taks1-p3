@@ -1,0 +1,8 @@
+@model OrderDetailViewModel
+@{
+    ViewData["Title"] = "Order details";
+}
+<section class="glass-panel">
+    <h1>Order #@Model.OrderId</h1>
+    <partial name="_OrderDetails" model="Model" />
+</section>

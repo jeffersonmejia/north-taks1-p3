@@ -1,0 +1,18 @@
+@model OrderDetailViewModel
+<div class="table-wrap">
+    <table>
+        <thead>
+            <tr><th>Product</th><th>Quantity</th><th>Price</th><th>Discount</th><th>Subtotal</th></tr>
+        </thead>
+        <tbody>
+        @foreach (var line in Model.Lines)
+        {
+            <tr><td>@line.ProductName</td><td>@line.Quantity</td><td>@line.UnitPrice.ToString("C")</td><td>@line.Discount.ToString("P0")</td><td>@line.Subtotal.ToString("C")</td></tr>
+        }
+        </tbody>
+    </table>
+</div>
+<div class="summary-bar">
+    <strong>@Model.TotalProducts products</strong>
+    <strong>@Model.Total.ToString("C")</strong>
+</div>
