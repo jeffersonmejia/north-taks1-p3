@@ -1,0 +1,26 @@
+@model CartSummaryViewModel
+@{
+    ViewData["Title"] = "Confirm purchase";
+}
+<section class="glass-panel confirmation">
+    <h1>Confirm purchase</h1>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr><th>Product</th><th>Quantity</th><th>Unit price</th><th>Subtotal</th></tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model.Items)
+            {
+                <tr><td>@item.ProductName</td><td>@item.Quantity</td><td>@item.UnitPrice.ToString("C")</td><td>@item.Subtotal.ToString("C")</td></tr>
+            }
+            </tbody>
+        </table>
+    </div>
+    <div class="summary-bar">
+        <strong>Total: @Model.Total.ToString("C")</strong>
+        <form asp-action="ConfirmPurchase" method="post">
+            <button class="btn btn-primary purchase-pulse" type="submit">Confirm</button>
+        </form>
+    </div>
+</section>

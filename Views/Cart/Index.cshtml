@@ -1,0 +1,51 @@
+@model CartSummaryViewModel
+@{
+    ViewData["Title"] = "Cart";
+}
+<section class="glass-panel">
+    <h1>Shopping cart</h1>
+    @if (Model.IsEmpty)
+    {
+        <p>Your cart is empty.</p>
+        <a class="btn btn-primary" asp-controller="Products" asp-action="Index">Browse products</a>
+    }
+    else
+    {
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr><th>Product</th><th>Price</th><th>Stock</th><th>Quantity</th><th>Subtotal</th><th></th></tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model.Items)
+                {
+                    <tr>
+                        <td>@item.ProductName</td>
+                        <td>@item.UnitPrice.ToString("C")</td>
+                        <td>@item.Stock</td>
+                        <td>
+                            <form asp-action="Update" method="post" class="inline-form">
+                                <input type="hidden" name="productId" value="@item.ProductId" />
+                                <input class="qty" type="number" name="quantity" min="1" max="@item.Stock" step="1" value="@item.Quantity" />
+                                <button class="btn btn-ghost" type="submit">Update</button>
+                            </form>
+                        </td>
+                        <td>@item.Subtotal.ToString("C")</td>
+                        <td>
+                            <form asp-action="Remove" method="post">
+                                <input type="hidden" name="productId" value="@item.ProductId" />
+                                <button class="btn btn-danger" type="submit">Remove</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+        <div class="summary-bar">
+            <strong>@Model.TotalProducts products</strong>
+            <strong>@Model.Total.ToString("C")</strong>
+            <a class="btn btn-primary" asp-action="Confirm">Review purchase</a>
+        </div>
+    }
+</section>

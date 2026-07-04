@@ -1,0 +1,19 @@
+@model LoginViewModel
+@{
+    ViewData["Title"] = "Login";
+}
+<section class="auth-wrap">
+    <form class="glass-panel auth-card fade-in" asp-action="Login" method="post">
+        <h1>Welcome back</h1>
+        <div asp-validation-summary="ModelOnly" class="validation"></div>
+        <label asp-for="Email"></label>
+        <input asp-for="Email" autocomplete="email" />
+        <span asp-validation-for="Email" class="validation"></span>
+        <label asp-for="Password"></label>
+        <input asp-for="Password" autocomplete="current-password" />
+        <span asp-validation-for="Password" class="validation"></span>
+        <label class="check-line"><input asp-for="RememberMe" /> Remember me</label>
+        <button class="btn btn-primary" type="submit">Login</button>
+        <a asp-action="Register">Create customer account</a>
+    </form>
+</section>
