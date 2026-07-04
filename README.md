@@ -170,7 +170,44 @@ dotnet watch run
 
 When the app starts, `IdentitySeeder` creates the `Admin`, `Customer`, and `Employee` roles. `Employee` is kept for compatibility with previous academic work; this project protects the required routes with `Admin` and `Customer`.
 
-## 4.7 Publish in Release mode
+## 4.7 Default admin user
+
+The identity seed creates a default academic admin account:
+
+| Field | Value |
+|---|---|
+| Email | `admin@northwind.local` |
+| Password | `Admin123!` |
+| Role | `Admin` |
+
+The password is stored as an ASP.NET Core Identity password hash, not as plain text in the database.
+
+To apply or repair this admin user in an existing `northwind_identity` database without recreating the databases, run:
+
+```bash
+psql -d postgres -f db/identity_admin_seed.sql
+```
+
+## 4.8 Protected routes
+
+The root route `/` is a neutral home page and does not expose product, inventory, order, or customer data.
+
+Protected MVC routes:
+
+| Area | Controller | Access |
+|---|---|---|
+| Home | `HomeController.Index` | Public |
+| Authentication | `AccountController.Login`, `Register`, `AccessDenied` | Public |
+| Products | `ProductsController.Index`, `Details` | `Customer` only |
+| Cart | `CartController` | `Customer` only |
+| Customer orders | `OrdersController` | `Customer` only |
+| Admin inventory | `AdminInventoryController` | `Admin` only |
+| Admin orders | `AdminOrdersController` | `Admin` only |
+| Status pages | `StatusController` | Public/internal error flow |
+
+The navbar follows the same rules: product/cart/order links appear only for `Customer`, while inventory/order administration links appear only for `Admin`.
+
+## 4.9 Publish in Release mode
 
 ```bash
 dotnet publish -c Release -o ./publish
@@ -184,14 +221,19 @@ dotnet ./publish/NorthwindStore.dll
 
 # 5. Logging
 
-Logging is configured with **Serilog** in `Program.cs` using two sinks:
+Logging is configured with **Serilog** in `Infrastructure/Extensions/LoggingExtensions.cs`.
+
+Detailed request/database logs are enabled only when `ASPNETCORE_ENVIRONMENT=Development`.
+In non-development environments, the app writes only `Warning` and higher events to the console and does not create `logs/app-*.json` files. This avoids filling disk and slowing down production with high-volume EF query logs.
+
+Development sinks:
 
 | Output | Configuration |
 |---|---|
 | Console | `.WriteTo.Console()` |
 | Rolling file (JSON) | `.WriteTo.File(new CompactJsonFormatter(), "logs/app-.json", ...)` |
 
-File rolling policy:
+Development file rolling policy:
 
 | Setting | Value | Description |
 |---|---|---|

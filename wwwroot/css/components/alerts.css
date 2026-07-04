@@ -5,5 +5,5 @@
   border: 1px solid var(--stroke);
   animation: alertIn 260ms ease;
 }
-.alert-success { background: rgba(120, 224, 143, 0.16); }
-.alert-error { background: rgba(255, 107, 107, 0.16); }
+.alert-success { background: var(--success-bg); color: var(--success); border-color: var(--success-stroke); }
+.alert-error { background: var(--danger-bg); color: var(--danger); border-color: var(--danger-stroke); }

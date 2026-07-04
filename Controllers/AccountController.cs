@@ -55,7 +55,17 @@ public class AccountController(
             IsPersistent = model.RememberMe
         });
 
-        return RedirectToAction("Index", "Products");
+        if (await users.IsInRoleAsync(user, RoleNames.Admin))
+        {
+            return RedirectToAction("Inventory", "AdminInventory");
+        }
+
+        if (await users.IsInRoleAsync(user, RoleNames.Customer))
+        {
+            return RedirectToAction("Index", "Products");
+        }
+
+        return RedirectToAction("Index", "Home");
     }
 
     [HttpGet]

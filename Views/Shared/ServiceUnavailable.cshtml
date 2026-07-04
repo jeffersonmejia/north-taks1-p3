@@ -1,0 +1,24 @@
+@model NorthwindStore.Controllers.ErrorViewModel
+@{
+    Layout = null;
+    ViewData["Title"] = "Loading...";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] - NorthwindStore</title>
+    <link rel="stylesheet" href="~/css/pages/service-unavailable.css" asp-append-version="true" />
+</head>
+<body class="service-unavailable-page">
+    <main class="service-unavailable-card">
+        <img class="service-unavailable-image" src="/images/service_unavailable.avif" alt="" />
+        <p class="service-unavailable-message">@Model.Message</p>
+        <p class="service-unavailable-status"><strong>Loading, please wait...</strong></p>
+        <div class="service-unavailable-spinner"></div>
+    </main>
+    <script src="~/js/service-unavailable.js" asp-append-version="true"></script>
+</body>
+</html>

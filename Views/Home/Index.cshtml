@@ -1,0 +1,29 @@
+@{
+    ViewData["Title"] = "Home";
+}
+
+<section class="home-panel glass-panel fade-in">
+    <p class="eyebrow">NorthwindStore</p>
+    <h1>Welcome</h1>
+    <p>Sign in to continue with your assigned workspace.</p>
+    <div class="home-actions">
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            @if (User.IsInRole(RoleNames.Customer))
+            {
+                <a class="btn btn-primary" asp-controller="Products" asp-action="Index">Products</a>
+                <a class="btn btn-ghost" asp-controller="Orders" asp-action="MyOrders">My orders</a>
+            }
+            @if (User.IsInRole(RoleNames.Admin))
+            {
+                <a class="btn btn-primary" asp-controller="AdminInventory" asp-action="Inventory">Inventory</a>
+                <a class="btn btn-ghost" asp-controller="AdminOrders" asp-action="Orders">Orders</a>
+            }
+        }
+        else
+        {
+            <a class="btn btn-primary" asp-controller="Account" asp-action="Login">Login</a>
+            <a class="btn btn-ghost" asp-controller="Account" asp-action="Register">Register</a>
+        }
+    </div>
+</section>

@@ -9,9 +9,10 @@
   border-radius: var(--radius);
   color: var(--text);
   font-weight: 800;
-  transition: transform 180ms ease, background 180ms ease, border 180ms ease;
+  transition: background 180ms ease, border 180ms ease, color 180ms ease;
 }
-.btn:hover { transform: translateY(-2px); }
-.btn-primary { background: linear-gradient(135deg, var(--primary), #8cf4bc); color: #102027; }
-.btn-ghost { background: rgba(255, 255, 255, 0.08); border-color: var(--stroke); }
-.btn-danger { background: rgba(255, 107, 107, 0.18); color: #ffdede; border-color: rgba(255, 107, 107, 0.32); }
+.btn:hover { border-color: var(--primary); color: var(--primary); }
+.btn-primary { background: var(--primary); color: var(--on-primary); }
+.btn-primary:hover { background: var(--primary-strong); color: var(--on-primary); border-color: var(--primary-strong); }
+.btn-ghost { background: var(--surface); border-color: var(--stroke); }
+.btn-danger { background: var(--danger-bg); color: var(--danger); border-color: var(--danger-stroke); }

@@ -36,11 +36,11 @@ public class StatusController : Controller
     {
         HttpContext.Response.StatusCode = 503;
 
-        return View("~/Views/Shared/Error.cshtml", new ErrorViewModel
+        return View("~/Views/Shared/ServiceUnavailable.cshtml", new ErrorViewModel
         {
             TraceId = Activity.Current?.Id ?? HttpContext.TraceIdentifier,
             IsDbError = true,
-                Message = "The service is temporarily unavailable. Please try again later."
+            Message = "The service is temporarily unavailable. Please try again later."
         });
     }
 }

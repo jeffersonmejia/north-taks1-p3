@@ -1,0 +1,61 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.service-unavailable-page {
+  min-height: 100vh;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+}
+
+.service-unavailable-card {
+  width: min(100%, 480px);
+  padding: 40px;
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius);
+  background: var(--surface);
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+
+.service-unavailable-image {
+  width: 250px;
+  height: auto;
+  margin: 0 auto 20px;
+  display: block;
+}
+
+.service-unavailable-message {
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.service-unavailable-status {
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.service-unavailable-spinner {
+  width: 40px;
+  height: 40px;
+  margin: 20px auto 0;
+  border: 3px solid var(--stroke);
+  border-top-color: var(--primary);
+  border-radius: var(--radius-round);
+  animation: service-unavailable-spin 0.8s linear infinite;
+}
+
+@keyframes service-unavailable-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

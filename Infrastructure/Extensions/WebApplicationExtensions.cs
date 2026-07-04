@@ -41,8 +41,15 @@ public static class WebApplicationExtensions
 
         app.MapControllerRoute(
             name: "default",
-            pattern: "{controller=Products}/{action=Index}/{id?}");
+            pattern: "{controller=Home}/{action=Index}/{id?}");
 
         return app;
+    }
+
+    public static async Task RunNorthwindStoreAsync(this WebApplication app)
+    {
+        app.UseNorthwindStorePipeline();
+        await app.EnsureDatabasesAsync();
+        await app.RunAsync();
     }
 }

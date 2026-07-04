@@ -1,0 +1,11 @@
+.home-panel {
+  max-width: 720px;
+  margin: 48px auto 0;
+}
+
+.home-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}

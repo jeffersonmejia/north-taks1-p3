@@ -4,17 +4,10 @@
 }
 
 <section class="glass-panel narrow fade-in error-page">
-    <div class="error-icon">
+    <div class="error-icon @(Model.IsDbError ? "db-error-icon" : string.Empty)">
         @if (Model.IsDbError)
         {
-            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <ellipse cx="12" cy="5" rx="9" ry="3" />
-                <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" />
-                <path d="M3 5v7c0 1.66 4 3 9 3s9-1.34 9-3V5" />
-                <path d="M3 12v5c0 1.66 4 3 9 3s9-1.34 9-3v-5" />
-                <line x1="14" y1="11" x2="16" y2="13" />
-                <line x1="16" y1="11" x2="14" y2="13" />
-            </svg>
+            <img class="service-unavailable-image" src="~/images/service_unavailable.avif" alt="" />
         }
         else
         {
@@ -28,19 +21,6 @@
 
     <h1 class="error-title">@ViewData["Title"]</h1>
     <p class="error-message">@Model.Message</p>
-
-    @if (Model.IsDbError)
-    {
-        <div class="error-hints glass-card">
-            <h3>Troubleshooting steps</h3>
-            <ol>
-                <li>Ensure PostgreSQL is running: <code>sudo systemctl status postgresql</code></li>
-                <li>Verify the connection strings in <code>Secrets/secrets.json</code></li>
-                <li>Run setup: <code>bash db/scripts/setup.sh</code> (Linux) or <code>.\db\scripts\setup.ps1</code> (Windows)</li>
-                <li>Check that the database user exists: <code>psql -U postgres -c "\du"</code></li>
-            </ol>
-        </div>
-    }
 
     <div class="error-actions">
         <a class="btn btn-primary" href="/">Go to home</a>

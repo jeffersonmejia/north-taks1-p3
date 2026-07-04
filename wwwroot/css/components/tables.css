@@ -1,6 +1,6 @@
 .table-wrap { border-radius: var(--radius); border: 1px solid var(--stroke); overflow: hidden; }
 table { width: 100%; border-collapse: collapse; min-width: 680px; }
-th, td { padding: 14px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); }
-th { color: var(--primary); background: rgba(255,255,255,0.08); }
+th, td { padding: 14px; text-align: left; border-bottom: 1px solid var(--stroke); }
+th { color: var(--text); background: var(--panel-strong); }
 tr { transition: background 160ms ease, transform 160ms ease; }
-.admin-table tbody tr:hover { background: rgba(255,255,255,0.08); }
+.admin-table tbody tr:hover { background: var(--panel-strong); }

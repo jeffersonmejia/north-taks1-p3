@@ -6,6 +6,9 @@ namespace NorthwindStore.Data;
 
 public static class IdentitySeeder
 {
+    public const string AdminEmail = "admin@northwind.local";
+    private const string AdminPasswordHash = "AQAAAAIAAYagAAAAEGCfGeL1WxcLSnc9vD5Ak8u4Cdv1yCVSN37Bho6ru+WaVAsnqzJwqc1iSH+R8OoYBw==";
+
     public static async Task SeedAsync(IServiceProvider services)
     {
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
@@ -19,22 +22,28 @@ public static class IdentitySeeder
             }
         }
 
-        var adminEmail = "admin@northwind.local";
-        var admin = await userManager.FindByEmailAsync(adminEmail);
+        var admin = await userManager.FindByEmailAsync(AdminEmail);
         if (admin is null)
         {
             admin = new ApplicationUser
             {
-                UserName = adminEmail,
-                Email = adminEmail,
+                UserName = AdminEmail,
+                Email = AdminEmail,
                 EmailConfirmed = true,
-                FullName = "Northwind Admin"
+                FullName = "Northwind Admin",
+                PasswordHash = AdminPasswordHash,
+                SecurityStamp = "3F0F9071-EDAE-44EC-8C25-C2AAEC644AA7"
             };
-            var result = await userManager.CreateAsync(admin, "Admin123!");
-            if (result.Succeeded)
+            var result = await userManager.CreateAsync(admin);
+            if (!result.Succeeded)
             {
-                await userManager.AddToRoleAsync(admin, RoleNames.Admin);
+                return;
             }
+        }
+
+        if (!await userManager.IsInRoleAsync(admin, RoleNames.Admin))
+        {
+            await userManager.AddToRoleAsync(admin, RoleNames.Admin);
         }
     }
 }

@@ -2,11 +2,10 @@
   border: 1px solid var(--stroke);
   border-radius: var(--radius);
   background: var(--panel);
-  backdrop-filter: blur(var(--blur));
   box-shadow: var(--shadow);
 }
 .glass-panel { padding: clamp(18px, 3vw, 32px); }
 .glass-card { padding: 20px; }
-.badge { display: inline-flex; padding: 6px 10px; border-radius: 999px; font-weight: 800; }
-.badge.danger { background: rgba(255, 107, 107, 0.18); color: var(--danger); }
-.badge.success { background: rgba(120, 224, 143, 0.18); color: var(--success); }
+.badge { display: inline-flex; padding: 6px 10px; border-radius: var(--radius-pill); font-weight: 800; }
+.badge.danger { background: var(--danger-bg); color: var(--danger); }
+.badge.success { background: var(--success-bg); color: var(--success); }

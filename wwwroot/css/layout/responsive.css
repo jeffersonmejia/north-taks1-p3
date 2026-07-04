@@ -3,6 +3,11 @@
   .navbar { position: static; flex-direction: column; }
   .nav-links, .nav-actions { width: 100%; justify-content: center; }
   .product-grid { grid-template-columns: 1fr; }
+  .auth-actions .btn { width: 100%; }
   .table-wrap { overflow-x: auto; }
-  h1 { font-size: 2.15rem; }
+  h1 { font-size: 1.65rem; }
+}
+
+@media (max-width: 560px) {
+  .auth-grid { grid-template-columns: 1fr; }
 }

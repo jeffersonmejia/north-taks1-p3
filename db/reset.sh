@@ -15,4 +15,7 @@ sudo -u postgres psql -d northwind < "$SCRIPT_DIR/seed.sql"
 echo "=== Loading indexes ==="
 sudo -u postgres psql -d northwind < "$SCRIPT_DIR/index.sql"
 
+echo "=== Granting application permissions ==="
+sudo -u postgres psql -d postgres < "$SCRIPT_DIR/grants.sql"
+
 echo "=== Reset complete ==="

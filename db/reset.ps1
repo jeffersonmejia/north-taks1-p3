@@ -10,4 +10,7 @@ Write-Host "=== Loading seed data ==="
 Write-Host "=== Loading indexes ==="
 & psql -d northwind -f "$PSScriptRoot/index.sql"
 
+Write-Host "=== Granting application permissions ==="
+& psql -d postgres -f "$PSScriptRoot/grants.sql"
+
 Write-Host "=== Reset complete ==="

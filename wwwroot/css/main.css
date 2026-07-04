@@ -10,6 +10,7 @@
 @import url("./components/cards.css");
 @import url("./components/alerts.css");
 @import url("./components/pagination.css");
+@import url("./pages/home.css");
 @import url("./pages/auth.css");
 @import url("./pages/products.css");
 @import url("./pages/cart.css");

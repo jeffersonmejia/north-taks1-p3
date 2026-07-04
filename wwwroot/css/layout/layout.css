@@ -1,4 +1,4 @@
-.ambient { position: fixed; inset: 0; pointer-events: none; backdrop-filter: saturate(130%); }
+.ambient { display: none; }
 .shell { width: min(1180px, calc(100% - 32px)); margin: 0 auto; padding: 32px 0 60px; }
 .hero { display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: end; margin-bottom: 24px; }
 .narrow { max-width: 620px; margin-inline: auto; }

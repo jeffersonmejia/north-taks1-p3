@@ -1,9 +1,9 @@
 <header class="navbar">
-    <a class="brand" asp-controller="Products" asp-action="Index">NorthwindStore</a>
+    <a class="brand" asp-controller="Home" asp-action="Index">NorthwindStore</a>
     <nav class="nav-links">
-        <a asp-controller="Products" asp-action="Index">Products</a>
         @if (User.Identity?.IsAuthenticated == true && User.IsInRole(RoleNames.Customer))
         {
+            <a asp-controller="Products" asp-action="Index">Products</a>
             <a asp-controller="Cart" asp-action="Index">Cart</a>
             <a asp-controller="Orders" asp-action="MyOrders">My orders</a>
         }
