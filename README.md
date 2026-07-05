@@ -48,28 +48,42 @@ flowchart TB
 
     subgraph APP["Layered Architecture"]
         direction LR
-        P[Presentation<br/>Controllers, Views, ViewModels]
-        A[Application<br/>Services, Business Logic, Cache]
-        R[Data Access<br/>Repositories, LINQ]
-        D[Persistence<br/>DbContext, EF Core]
-        DB[(PostgreSQL)]
 
-        P --> A --> R --> D --> DB
+        P["Presentation<br/>Controllers, Razor Views, ViewModels"]
+        A["Application<br/>Services, Business Logic, Cache"]
+        R["Data Access<br/>Repositories, LINQ"]
+        D["Persistence<br/>EF Core DbContexts"]
+
+        P --> A
+        A --> R
+        R --> D
     end
 
-    subgraph CORE["Core / Support"]
-        direction LR
-        M[Domain<br/>Entities]
-        I[Infrastructure<br/>Middleware, Filters, Helpers]
+    subgraph CORE["Domain"]
+        M["Entities<br/>Product, Order, Customer, ApplicationUser"]
+    end
+
+    subgraph DB["PostgreSQL"]
+        N[(northwind)]
+        ID[(northwind_identity)]
+    end
+
+    subgraph INF["Infrastructure"]
+        I["Middleware, Filters, Helpers, Extensions"]
     end
 
     U --> P
-    A -.-> M
-    R -.-> M
-    D -.-> M
-    I -.-> P
-    I -.-> A
-    I -.-> D
+
+    A -.uses.-> M
+    R -.queries.-> M
+    D -.maps.-> M
+
+    D --> N
+    D --> ID
+
+    I -.supports.-> P
+    I -.supports.-> A
+    I -.supports.-> D
 ```
 
 # 4. Installation
