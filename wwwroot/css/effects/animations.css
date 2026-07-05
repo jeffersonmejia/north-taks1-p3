@@ -1,7 +1,50 @@
-@keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes alertIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
-@keyframes validationShake { 0%,100% { transform: translateX(0); } 35% { transform: translateX(-4px); } 70% { transform: translateX(4px); } }
-@keyframes confirmGlow { from { box-shadow: var(--active-ring-start); } to { box-shadow: var(--active-ring-end); } }
-.fade-in, .page-transition { animation: fadeUp 420ms ease both; }
-.add-cart:active { animation: confirmGlow 320ms ease; }
-.purchase-pulse { animation: confirmGlow 1.4s ease infinite alternate; }
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes alertIn {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes validationShake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  35% {
+    transform: translateX(-4px);
+  }
+  70% {
+    transform: translateX(4px);
+  }
+}
+@keyframes confirmGlow {
+  from {
+    box-shadow: var(--active-ring-start);
+  }
+  to {
+    box-shadow: var(--active-ring-end);
+  }
+}
+.fade-in,
+.page-transition {
+  animation: fadeUp 420ms ease both;
+}
+.add-cart:active {
+  animation: confirmGlow 320ms ease;
+}
+.purchase-pulse {
+  animation: confirmGlow 1.4s ease infinite alternate;
+}
