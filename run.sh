@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-echo "=== Checking database ==="
 sudo -v
+trap 'kill 0' EXIT
+(sudo -v &>/dev/null &)
+
+echo "=== Checking database ==="
 
 HAS_DATA=$(sudo -u postgres psql -d northwind -tAc "SELECT COUNT(*) FROM products;" 2>/dev/null || echo "0")
 

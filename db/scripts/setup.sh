@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-
-echo "=== Authenticating (one sudo prompt) ==="
 sudo -v
 trap 'kill 0' EXIT
-(sudo -v &>/dev/null &)  # keep sudo fresh
+(sudo -v &>/dev/null &)
+
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 
 echo "=== Dropping databases (if they exist) ==="
 sudo -u postgres psql -c "DROP DATABASE IF EXISTS northwind;"
