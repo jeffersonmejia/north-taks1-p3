@@ -1,12 +1,6 @@
 # 1. Summary
 
-NorthwindStore is an ASP.NET Core MVC academic project for a complete Northwind purchasing and inventory flow. It includes product browsing, a temporary shopping cart, order creation, order details, automatic stock updates, administrative inventory reports, authentication, role-based authorization, server-side validations, EF Core transactions, soft delete, single active session control, LINQ queries, PostgreSQL connection pooling, and IMemoryCache invalidation after purchases or inventory changes.
-
-The solution follows this responsibility flow:
-
-Controller -> Service -> Repository -> DbContext -> PostgreSQL
-
-Business logic is kept in services and repositories instead of controllers. The project also includes `db/schema.sql` with the complete PostgreSQL Northwind database adapted for the app, plus `db/seed.sql` for academic seed helpers.
+NorthwindStore is an ASP.NET Core MVC project for the Northwind purchasing and inventory flow — product browsing, shopping cart, orders, stock updates, admin reports, authentication, soft delete, session control, and caching.
 
 # 2. Technologies Used
 
