@@ -10,21 +10,20 @@ Business logic is kept in services and repositories instead of controllers. The 
 
 # 2. Technologies Used
 
-* ASP.NET Core MVC
-* C#
-* PostgreSQL
-* Northwind Database
-* Entity Framework Core
-* Database First
-* Npgsql
-* ASP.NET Core Identity
-* LINQ
-* IMemoryCache
-* HTML
-* CSS
-* JavaScript
-* Git
-* GitHub
+| Technology | Version |
+|---|---|
+| .NET SDK (ASP.NET Core MVC, C#, LINQ) | 10.0.301 |
+| ASP.NET Core (runtime, MVC, Identity) | 10.0.2 |
+| Entity Framework Core | 10.0.2 |
+| Npgsql.EntityFrameworkCore.PostgreSQL | 10.0.2 |
+| PostgreSQL (database server) | 17.10 |
+| Serilog.AspNetCore | 10.0.0 |
+| Serilog.Formatting.Compact | 3.0.0 |
+| Serilog.Sinks.File | 7.0.0 |
+| HTML / CSS | — |
+| JavaScript | ES2024+ |
+| Git | 2.47.3 |
+| GitHub | — |
 
 # 3. Architecture
 
@@ -50,36 +49,19 @@ All service and repository interfaces sit next to their implementations.
 ## 3.1 Package diagram
 
 ```mermaid
----
-title: NorthwindStore — Layers
----
 flowchart LR
-  subgraph P["Presentation"]
-    Ctrl["Controllers"]
-    Views["Views"]
-    VMs["ViewModels"]
-  end
-  subgraph App["Application"]
-    Svcs["Services"]
-  end
-  subgraph DAL["Data Access"]
-    Repos["Repositories"]
-  end
-  subgraph Per["Persistence"]
-    DbCtx["DbContexts"]
-    Seed["Seeders"]
-  end
-  subgraph Dom["Domain"]
-    Ents["Entities"]
-    VOs["Value Objects"]
-  end
-  subgraph XCut["Cross-Cutting"]
-    Mid["Middleware"]
-    Ext["Extensions"]
-  end
+  P["Presentation<br/>Controllers / Views / ViewModels"]
+  App["Application<br/>Services"]
+  DAL["Data Access<br/>Repositories"]
+  Per["Persistence<br/>DbContexts / Seeders"]
+  Dom["Domain<br/>Entities / Value Objects"]
+  XCut["Cross-Cutting<br/>Middleware / Extensions"]
 
   P --> App --> DAL --> Per --> Dom
-  XCut -.-> P & App & DAL & Per
+  XCut -.-> P
+  XCut -.-> App
+  XCut -.-> DAL
+  XCut -.-> Per
 ```
 
 # 4. Installation
