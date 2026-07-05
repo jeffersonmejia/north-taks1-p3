@@ -46,72 +46,27 @@ All service and repository interfaces sit next to their implementations.
 flowchart TB
     U[User]
 
-    subgraph FLOW["Main Application Flow"]
+    subgraph APP["Layered Architecture"]
         direction LR
-
-        subgraph P["Presentation"]
-            direction TB
-            P1[Controllers]
-            P2[Razor Views]
-            P3[ViewModels]
-        end
-
-        subgraph A["Application"]
-            direction TB
-            A1[ProductService]
-            A2[CartService]
-            A3[OrderService]
-            A4[InventoryService]
-            A5[CacheService]
-        end
-
-        subgraph R["Data Access"]
-            direction TB
-            R1[ProductRepository]
-            R2[OrderRepository]
-        end
-
-        subgraph D["Persistence"]
-            direction TB
-            D1[NorthwindContext]
-            D2[ApplicationDbContext]
-        end
-
+        P[Presentation<br/>Controllers, Views, ViewModels]
+        A[Application<br/>Services, Business Logic, Cache]
+        R[Data Access<br/>Repositories, LINQ]
+        D[Persistence<br/>DbContext, EF Core]
         DB[(PostgreSQL)]
+
+        P --> A --> R --> D --> DB
     end
 
-    subgraph SUPPORT["Supporting Layers"]
+    subgraph CORE["Core / Support"]
         direction LR
-
-        subgraph M["Domain"]
-            direction TB
-            M1[Product]
-            M2[Order]
-            M3[OrderDetail]
-            M4[Customer]
-            M5[ApplicationUser]
-        end
-
-        subgraph I["Infrastructure"]
-            direction TB
-            I1[SingleSessionMiddleware]
-            I2[DbExceptionHandlingMiddleware]
-            I3[ValidateCartFilter]
-            I4[Helpers]
-            I5[Extensions]
-        end
+        M[Domain<br/>Entities]
+        I[Infrastructure<br/>Middleware, Filters, Helpers]
     end
 
     U --> P
-    P --> A
-    A --> R
-    R --> D
-    D --> DB
-
     A -.-> M
     R -.-> M
     D -.-> M
-
     I -.-> P
     I -.-> A
     I -.-> D
