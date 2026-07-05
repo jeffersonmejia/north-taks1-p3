@@ -4,20 +4,20 @@ NorthwindStore is an ASP.NET Core MVC project for the Northwind purchasing and i
 
 # 2. Technologies Used
 
-| Technology | Version |
-|---|---|
+| Technology                            | Version  |
+| ------------------------------------- | -------- |
 | .NET SDK (ASP.NET Core MVC, C#, LINQ) | 10.0.301 |
-| ASP.NET Core (runtime, MVC, Identity) | 10.0.2 |
-| Entity Framework Core | 10.0.2 |
-| Npgsql.EntityFrameworkCore.PostgreSQL | 10.0.2 |
-| PostgreSQL (database server) | 17.10 |
-| Serilog.AspNetCore | 10.0.0 |
-| Serilog.Formatting.Compact | 3.0.0 |
-| Serilog.Sinks.File | 7.0.0 |
-| HTML / CSS | — |
-| JavaScript | ES2024+ |
-| Git | 2.47.3 |
-| GitHub | — |
+| ASP.NET Core (runtime, MVC, Identity) | 10.0.2   |
+| Entity Framework Core                 | 10.0.2   |
+| Npgsql.EntityFrameworkCore.PostgreSQL | 10.0.2   |
+| PostgreSQL (database server)          | 17.10    |
+| Serilog.AspNetCore                    | 10.0.0   |
+| Serilog.Formatting.Compact            | 3.0.0    |
+| Serilog.Sinks.File                    | 7.0.0    |
+| HTML / CSS                            | —        |
+| JavaScript                            | ES2024+  |
+| Git                                   | 2.47.3   |
+| GitHub                                | —        |
 
 # 3. Architecture
 
@@ -29,33 +29,97 @@ Views/Controllers  →  Services  →  Repositories  →  Data/DbContext  →  P
 
 Each layer depends only on the one below. Cross-cutting concerns (caching, auth, session) live in `Infrastructure/`.
 
-| Layer | Folder | Responsibility |
-|---|---|---|
-| Presentation | `Controllers/`, `Views/`, `Models/ViewModels/` | HTTP handling, UI, DTOs |
-| Application | `Services/` | Business logic, caching, orchestration |
-| Data Access | `Repositories/` | LINQ queries, persistence |
-| Persistence | `Data/` | DbContexts, migrations, seeders |
-| Domain | `Models/Northwind/`, `Models/Identity/` | Entities and identity |
-| Infrastructure | `Infrastructure/` | Middleware, filters, extensions, helpers |
+| Layer          | Folder                                         | Responsibility                           |
+| -------------- | ---------------------------------------------- | ---------------------------------------- |
+| Presentation   | `Controllers/`, `Views/`, `Models/ViewModels/` | HTTP handling, UI, DTOs                  |
+| Application    | `Services/`                                    | Business logic, caching, orchestration   |
+| Data Access    | `Repositories/`                                | LINQ queries, persistence                |
+| Persistence    | `Data/`                                        | DbContexts, migrations, seeders          |
+| Domain         | `Models/Northwind/`, `Models/Identity/`        | Entities and identity                    |
+| Infrastructure | `Infrastructure/`                              | Middleware, filters, extensions, helpers |
 
 All service and repository interfaces sit next to their implementations.
 
 ## 3.1 Package diagram
 
 ```mermaid
-graph LR
-  P["Presentation<br/>8 Controllers → Razor Views ↔ ViewModels"]
-  App["Application<br/>CartSvc, OrderSvc, ProductSvc, InventorySvc, Cache"]
-  DAL["Data Access<br/>ProductRepo, OrderRepo — LINQ, persistence"]
-  Per["Persistence<br/>NorthwindCtx, AppDbContext — EF Core, seeding"]
-  Dom["Domain<br/>Product, Order, Customer, OrderDetail, AppUser"]
-  XCut["Cross-Cutting<br/>SingleSession MW, ValidateCart, DI, helpers"]
+flowchart LR
+    U[User]
 
-  P --> App --> DAL --> Per --> Dom
-  XCut -.-> P
-  XCut -.-> App
-  XCut -.-> DAL
-  XCut -.-> Per
+    subgraph P["Presentation Layer"]
+        direction TB
+        P1[Controllers]
+        P2[Razor Views]
+        P3[ViewModels]
+    end
+
+    subgraph A["Application Layer"]
+        direction TB
+        A1[ProductService]
+        A2[CartService]
+        A3[OrderService]
+        A4[InventoryService]
+        A5[CacheService]
+    end
+
+    subgraph R["Data Access Layer"]
+        direction TB
+        R1[ProductRepository]
+        R2[OrderRepository]
+    end
+
+    subgraph D["Persistence Layer"]
+        direction TB
+        D1[NorthwindContext]
+        D2[ApplicationDbContext]
+    end
+
+    subgraph M["Domain Layer"]
+        direction TB
+        M1[Product]
+        M2[Order]
+        M3[OrderDetail]
+        M4[Customer]
+        M5[ApplicationUser]
+    end
+
+    subgraph I["Infrastructure"]
+        direction TB
+        I1[SingleSessionMiddleware]
+        I2[DbExceptionHandlingMiddleware]
+        I3[ValidateCartFilter]
+        I4[Helpers / Extensions]
+    end
+
+    DB[(PostgreSQL)]
+
+    U --> P1
+    P1 --> A1
+    P1 --> A2
+    P1 --> A3
+    P1 --> A4
+
+    A1 --> R1
+    A3 --> R2
+    A4 --> R1
+
+    R1 --> D1
+    R2 --> D1
+    D2 --> DB
+    D1 --> DB
+
+    D1 --> M1
+    D1 --> M2
+    D1 --> M3
+    D1 --> M4
+    D2 --> M5
+
+    I1 -.-> P1
+    I2 -.-> D1
+    I3 -.-> A2
+    I4 -.-> P1
+    I4 -.-> A1
+    I4 -.-> D1
 ```
 
 # 4. Installation
@@ -85,6 +149,7 @@ b) **Windows** — Download the **.NET SDK 10.0** installer from [https://dotnet
 ### 4.1.3 PostgreSQL
 
 a) **Debian**
+
 ```bash
 sudo apt update
 sudo apt install -y postgresql postgresql-client
@@ -139,14 +204,14 @@ psql -d northwind -f db/index.sql
 
 Performance indexes are defined in `db/index.sql` (run separately after the schema). They include:
 
-| Index | Column(s) | Purpose |
-|---|---|---|
-| `ix_products_available` | `discontinued`, `units_in_stock` (partial, `is_deleted = false`) | Speeds up the available-products listing |
-| `ix_products_name_trgm` | `product_name` (GIN trigram, partial `is_deleted = false`) | Accelerates `ILIKE` search by product name |
-| `ix_products_low_stock` | `units_in_stock`, `discontinued` (partial, in-stock only) | Fast low-stock reports |
-| `ix_products_discontinued` | `discontinued` (partial, `discontinued = true`) | Fast discontinued-products query |
-| `ix_order_details_product` | `product_id` | Speeds up the most-purchased-products aggregation |
-| `ix_orders_customer_date` | `customer_id`, `order_date` (partial, `is_deleted = false`) | Fast customer order history and sorting |
+| Index                      | Column(s)                                                        | Purpose                                           |
+| -------------------------- | ---------------------------------------------------------------- | ------------------------------------------------- |
+| `ix_products_available`    | `discontinued`, `units_in_stock` (partial, `is_deleted = false`) | Speeds up the available-products listing          |
+| `ix_products_name_trgm`    | `product_name` (GIN trigram, partial `is_deleted = false`)       | Accelerates `ILIKE` search by product name        |
+| `ix_products_low_stock`    | `units_in_stock`, `discontinued` (partial, in-stock only)        | Fast low-stock reports                            |
+| `ix_products_discontinued` | `discontinued` (partial, `discontinued = true`)                  | Fast discontinued-products query                  |
+| `ix_order_details_product` | `product_id`                                                     | Speeds up the most-purchased-products aggregation |
+| `ix_orders_customer_date`  | `customer_id`, `order_date` (partial, `is_deleted = false`)      | Fast customer order history and sorting           |
 
 The trigram index requires the `pg_trgm` extension, which is enabled by `db/index.sql`.
 
@@ -195,11 +260,11 @@ When the app starts, `IdentitySeeder` creates the `Admin`, `Customer`, and `Empl
 
 The identity seed creates a default academic admin account:
 
-| Field | Value |
-|---|---|
-| Email | `admin@northwind.local` |
-| Password | `Admin123!` |
-| Role | `Admin` |
+| Field    | Value                   |
+| -------- | ----------------------- |
+| Email    | `admin@northwind.local` |
+| Password | `Admin123!`             |
+| Role     | `Admin`                 |
 
 The password is stored as an ASP.NET Core Identity password hash, not as plain text in the database.
 
@@ -215,16 +280,16 @@ The root route `/` is a neutral home page and does not expose product, inventory
 
 Protected MVC routes:
 
-| Area | Controller | Access |
-|---|---|---|
-| Home | `HomeController.Index` | Public |
-| Authentication | `AccountController.Login`, `Register`, `AccessDenied` | Public |
-| Products | `ProductsController.Index`, `Details` | `Customer` only |
-| Cart | `CartController` | `Customer` only |
-| Customer orders | `OrdersController` | `Customer` only |
-| Admin inventory | `AdminInventoryController` | `Admin` only |
-| Admin orders | `AdminOrdersController` | `Admin` only |
-| Status pages | `StatusController` | Public/internal error flow |
+| Area            | Controller                                            | Access                     |
+| --------------- | ----------------------------------------------------- | -------------------------- |
+| Home            | `HomeController.Index`                                | Public                     |
+| Authentication  | `AccountController.Login`, `Register`, `AccessDenied` | Public                     |
+| Products        | `ProductsController.Index`, `Details`                 | `Customer` only            |
+| Cart            | `CartController`                                      | `Customer` only            |
+| Customer orders | `OrdersController`                                    | `Customer` only            |
+| Admin inventory | `AdminInventoryController`                            | `Admin` only               |
+| Admin orders    | `AdminOrdersController`                               | `Admin` only               |
+| Status pages    | `StatusController`                                    | Public/internal error flow |
 
 The navbar follows the same rules: product/cart/order links appear only for `Customer`, while inventory/order administration links appear only for `Admin`.
 
@@ -249,36 +314,43 @@ In non-development environments, the app writes only `Warning` and higher events
 
 Development sinks:
 
-| Output | Configuration |
-|---|---|
-| Console | `.WriteTo.Console()` |
+| Output              | Configuration                                                      |
+| ------------------- | ------------------------------------------------------------------ |
+| Console             | `.WriteTo.Console()`                                               |
 | Rolling file (JSON) | `.WriteTo.File(new CompactJsonFormatter(), "logs/app-.json", ...)` |
 
 Development file rolling policy:
 
-| Setting | Value | Description |
-|---|---|---|
-| `rollingInterval` | `Day` | Creates a new file each day (`app-20260704.log`) |
-| `fileSizeLimitBytes` | 10 MB | Rotates early if a file exceeds this size |
-| `rollOnFileSizeLimit` | `true` | Enables size-based rotation in addition to daily |
-| `retainedFileCountLimit` | 7 | Keeps only the last 7 files, older ones are deleted automatically |
+| Setting                  | Value  | Description                                                       |
+| ------------------------ | ------ | ----------------------------------------------------------------- |
+| `rollingInterval`        | `Day`  | Creates a new file each day (`app-20260704.log`)                  |
+| `fileSizeLimitBytes`     | 10 MB  | Rotates early if a file exceeds this size                         |
+| `rollOnFileSizeLimit`    | `true` | Enables size-based rotation in addition to daily                  |
+| `retainedFileCountLimit` | 7      | Keeps only the last 7 files, older ones are deleted automatically |
 
 File format (compact JSON, one event per line):
 
-| Property | Description |
-|---|---|
-| `@t` | Timestamp (ISO 8601) |
-| `@mt` | Message template |
-| `@l` | Level (`INF`, `WRN`, `ERR`, `FTL`) |
-| `@x` | Exception details (present on errors) |
-| `@m` | Rendered message |
+| Property | Description                           |
+| -------- | ------------------------------------- |
+| `@t`     | Timestamp (ISO 8601)                  |
+| `@mt`    | Message template                      |
+| `@l`     | Level (`INF`, `WRN`, `ERR`, `FTL`)    |
+| `@x`     | Exception details (present on errors) |
+| `@m`     | Rendered message                      |
 
 Example line:
+
 ```json
-{"@t":"2026-07-04T15:29:46.316Z","@mt":"Database operation failed","@l":"ERROR","@x":"Npgsql.PostgresException: 42501: permission denied..."}
+{
+  "@t": "2026-07-04T15:29:46.316Z",
+  "@mt": "Database operation failed",
+  "@l": "ERROR",
+  "@x": "Npgsql.PostgresException: 42501: permission denied..."
+}
 ```
 
 Query examples:
+
 ```bash
 # Filter errors only
 jq 'select(.["@l"] == "ERR")' logs/app-*.json
