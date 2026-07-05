@@ -43,83 +43,78 @@ All service and repository interfaces sit next to their implementations.
 ## 3.1 Package diagram
 
 ```mermaid
-flowchart LR
+flowchart TB
     U[User]
 
-    subgraph P["Presentation Layer"]
-        direction TB
-        P1[Controllers]
-        P2[Razor Views]
-        P3[ViewModels]
+    subgraph FLOW["Main Application Flow"]
+        direction LR
+
+        subgraph P["Presentation"]
+            direction TB
+            P1[Controllers]
+            P2[Razor Views]
+            P3[ViewModels]
+        end
+
+        subgraph A["Application"]
+            direction TB
+            A1[ProductService]
+            A2[CartService]
+            A3[OrderService]
+            A4[InventoryService]
+            A5[CacheService]
+        end
+
+        subgraph R["Data Access"]
+            direction TB
+            R1[ProductRepository]
+            R2[OrderRepository]
+        end
+
+        subgraph D["Persistence"]
+            direction TB
+            D1[NorthwindContext]
+            D2[ApplicationDbContext]
+        end
+
+        DB[(PostgreSQL)]
     end
 
-    subgraph A["Application Layer"]
-        direction TB
-        A1[ProductService]
-        A2[CartService]
-        A3[OrderService]
-        A4[InventoryService]
-        A5[CacheService]
+    subgraph SUPPORT["Supporting Layers"]
+        direction LR
+
+        subgraph M["Domain"]
+            direction TB
+            M1[Product]
+            M2[Order]
+            M3[OrderDetail]
+            M4[Customer]
+            M5[ApplicationUser]
+        end
+
+        subgraph I["Infrastructure"]
+            direction TB
+            I1[SingleSessionMiddleware]
+            I2[DbExceptionHandlingMiddleware]
+            I3[ValidateCartFilter]
+            I4[Helpers]
+            I5[Extensions]
+        end
     end
 
-    subgraph R["Data Access Layer"]
-        direction TB
-        R1[ProductRepository]
-        R2[OrderRepository]
-    end
+    U --> P
+    P --> A
+    A --> R
+    R --> D
+    D --> DB
 
-    subgraph D["Persistence Layer"]
-        direction TB
-        D1[NorthwindContext]
-        D2[ApplicationDbContext]
-    end
+    A -.-> M
+    R -.-> M
+    D -.-> M
 
-    subgraph M["Domain Layer"]
-        direction TB
-        M1[Product]
-        M2[Order]
-        M3[OrderDetail]
-        M4[Customer]
-        M5[ApplicationUser]
-    end
-
-    subgraph I["Infrastructure"]
-        direction TB
-        I1[SingleSessionMiddleware]
-        I2[DbExceptionHandlingMiddleware]
-        I3[ValidateCartFilter]
-        I4[Helpers / Extensions]
-    end
-
-    DB[(PostgreSQL)]
-
-    U --> P1
-    P1 --> A1
-    P1 --> A2
-    P1 --> A3
-    P1 --> A4
-
-    A1 --> R1
-    A3 --> R2
-    A4 --> R1
-
-    R1 --> D1
-    R2 --> D1
-    D2 --> DB
-    D1 --> DB
-
-    D1 --> M1
-    D1 --> M2
-    D1 --> M3
-    D1 --> M4
-    D2 --> M5
-
-    I1 -.-> P1
-    I2 -.-> D1
-    I3 -.-> A2
-    I4 -.-> P1
-    I4 -.-> A1
-    I4 -.-> D1
+    I -.-> P
+    I -.-> A
+    I -.-> D
 ```
 
 # 4. Installation
