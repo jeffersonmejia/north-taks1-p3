@@ -51,53 +51,35 @@ All service and repository interfaces sit next to their implementations.
 
 ```mermaid
 ---
-title: NorthwindStore — Package Diagram
+title: NorthwindStore — Layers
 ---
-flowchart TB
-  subgraph Presentation["Presentation Layer"]
-    direction TB
-    Controllers["Controllers/\nAccountController\nAdminInventoryController\nAdminOrdersController\nCartController\nHomeController\nOrdersController\nProductsController\nStatusController"]
-    Views["Views/\nAccount / Admin / Cart\nOrders / Products / Shared\nStatus"]
-    ViewModels["Models/ViewModels/\nAuth / Admin / Cart\nOrders / Products"]
+flowchart LR
+  subgraph P["Presentation"]
+    Ctrl["Controllers"]
+    Views["Views"]
+    VMs["ViewModels"]
+  end
+  subgraph App["Application"]
+    Svcs["Services"]
+  end
+  subgraph DAL["Data Access"]
+    Repos["Repositories"]
+  end
+  subgraph Per["Persistence"]
+    DbCtx["DbContexts"]
+    Seed["Seeders"]
+  end
+  subgraph Dom["Domain"]
+    Ents["Entities"]
+    VOs["Value Objects"]
+  end
+  subgraph XCut["Cross-Cutting"]
+    Mid["Middleware"]
+    Ext["Extensions"]
   end
 
-  subgraph Application["Application Layer"]
-    Services["Services/\nCartService\nInventoryService\nOrderService\nProductService\nCacheService\nSessionControlService"]
-  end
-
-  subgraph DataAccess["Data Access Layer"]
-    Repositories["Repositories/\nProductRepository\nOrderRepository"]
-  end
-
-  subgraph Persistence["Persistence Layer"]
-    DbContexts["Data/\nNorthwindContext\nApplicationDbContext"]
-    DbInitializer["Data/\nDbInitializer\nIdentitySeeder"]
-  end
-
-  subgraph Domain["Domain Layer"]
-    Northwind["Models/Northwind/\nProduct / Order\nOrderDetail / Customer"]
-    Identity["Models/Identity/\nApplicationUser"]
-    Common["Models/Common/\nSoftDeleteEntity\nPagedResult"]
-  end
-
-  subgraph CrossCutting["Cross-Cutting"]
-    Middleware["Infrastructure/Middlewares/\nDbExceptionHandling\nSingleSession"]
-    Filters["Infrastructure/Filters/\nValidateCart"]
-    Extensions["Infrastructure/Extensions/\nServiceCollection\nWebApplication\nLogging / Configuration"]
-    Helpers["Infrastructure/Helpers/\nConstants / RoleNames\nSessionKeys / SessionExtensions"]
-  end
-
-  Presentation --> Application
-  Application --> DataAccess
-  DataAccess --> Persistence
-  Persistence --> Domain
-  CrossCutting -.-> Presentation
-  CrossCutting -.-> Application
-  CrossCutting -.-> DataAccess
-  CrossCutting -.-> Persistence
-
-  linkStyle 0,1,2,3 stroke-width:2
-  linkStyle 4,5,6,7 stroke-dasharray:4 4
+  P --> App --> DAL --> Per --> Dom
+  XCut -.-> P & App & DAL & Per
 ```
 
 # 4. Installation
