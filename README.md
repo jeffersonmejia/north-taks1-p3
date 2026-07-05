@@ -47,6 +47,59 @@ Each layer depends only on the one below. Cross-cutting concerns (caching, auth,
 
 All service and repository interfaces sit next to their implementations.
 
+## 3.1 Package diagram
+
+```mermaid
+---
+title: NorthwindStore — Package Diagram
+---
+flowchart TB
+  subgraph Presentation["Presentation Layer"]
+    direction TB
+    Controllers["Controllers/\nAccountController\nAdminInventoryController\nAdminOrdersController\nCartController\nHomeController\nOrdersController\nProductsController\nStatusController"]
+    Views["Views/\nAccount / Admin / Cart\nOrders / Products / Shared\nStatus"]
+    ViewModels["Models/ViewModels/\nAuth / Admin / Cart\nOrders / Products"]
+  end
+
+  subgraph Application["Application Layer"]
+    Services["Services/\nCartService\nInventoryService\nOrderService\nProductService\nCacheService\nSessionControlService"]
+  end
+
+  subgraph DataAccess["Data Access Layer"]
+    Repositories["Repositories/\nProductRepository\nOrderRepository"]
+  end
+
+  subgraph Persistence["Persistence Layer"]
+    DbContexts["Data/\nNorthwindContext\nApplicationDbContext"]
+    DbInitializer["Data/\nDbInitializer\nIdentitySeeder"]
+  end
+
+  subgraph Domain["Domain Layer"]
+    Northwind["Models/Northwind/\nProduct / Order\nOrderDetail / Customer"]
+    Identity["Models/Identity/\nApplicationUser"]
+    Common["Models/Common/\nSoftDeleteEntity\nPagedResult"]
+  end
+
+  subgraph CrossCutting["Cross-Cutting"]
+    Middleware["Infrastructure/Middlewares/\nDbExceptionHandling\nSingleSession"]
+    Filters["Infrastructure/Filters/\nValidateCart"]
+    Extensions["Infrastructure/Extensions/\nServiceCollection\nWebApplication\nLogging / Configuration"]
+    Helpers["Infrastructure/Helpers/\nConstants / RoleNames\nSessionKeys / SessionExtensions"]
+  end
+
+  Presentation --> Application
+  Application --> DataAccess
+  DataAccess --> Persistence
+  Persistence --> Domain
+  CrossCutting -.-> Presentation
+  CrossCutting -.-> Application
+  CrossCutting -.-> DataAccess
+  CrossCutting -.-> Persistence
+
+  linkStyle 0,1,2,3 stroke-width:2
+  linkStyle 4,5,6,7 stroke-dasharray:4 4
+```
+
 # 4. Installation
 
 ## 4.1 Clone the repository
