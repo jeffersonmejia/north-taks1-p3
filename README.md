@@ -43,13 +43,13 @@ All service and repository interfaces sit next to their implementations.
 ## 3.1 Package diagram
 
 ```mermaid
-graph LR
-  P["Presentation<br/>8 Controllers → Razor Views ↔ ViewModels<br/>HTTP handling, auth, validation, UI"]
-  App["Application<br/>CartSvc, OrderSvc, ProductSvc, InventorySvc, Cache<br/>Business logic, orchestration, caching"]
-  DAL["Data Access<br/>ProductRepo, OrderRepo<br/>LINQ queries, persistence layer"]
-  Per["Persistence<br/>NorthwindCtx, AppDbContext<br/>EF Core, seeders, migrations"]
-  Dom["Domain<br/>Product, Order, Customer, OrderDetail, AppUser<br/>Entities, identity, value objects"]
-  XCut["Cross-Cutting<br/>SingleSession MW, ValidateCart filter, DI exts.<br/>Middlewares, filters, helpers, constants"]
+graph TB
+  P["Presentation — Controllers, Views, ViewModels<br/>HTTP handling, auth, validation, UI rendering"]
+  App["Application — CartSvc, OrderSvc, ProductSvc, InventorySvc, Cache<br/>Business logic, orchestration, caching"]
+  DAL["Data Access — ProductRepo, OrderRepo<br/>LINQ queries, persistence abstraction"]
+  Per["Persistence — NorthwindCtx, AppDbContext<br/>EF Core, seeders, migrations"]
+  Dom["Domain — Product, Order, Customer, OrderDetail, AppUser<br/>Entities, identity, soft-delete support"]
+  XCut["Cross-Cutting — SingleSession MW, ValidateCart, DI, Helpers<br/>Middlewares, filters, extensions, constants"]
 
   P --> App --> DAL --> Per --> Dom
   XCut -.-> P
