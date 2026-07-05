@@ -43,47 +43,33 @@ All service and repository interfaces sit next to their implementations.
 ## 3.1 Package diagram
 
 ```mermaid
-flowchart TB
-    U[User]
+flowchart LR
+    U[User] --> P
 
     subgraph APP["Layered Architecture"]
         direction LR
+        P["Presentation<br>Controllers, Views"]
+        A["Application<br>Services"]
+        R["Data Access<br>Repositories"]
+        D["Persistence<br>DbContexts"]
+        DB[("PostgreSQL<br>northwind")]
 
-        P["Presentation<br/>Controllers, Razor Views, ViewModels"]
-        A["Application<br/>Services, Business Logic, Cache"]
-        R["Data Access<br/>Repositories, LINQ"]
-        D["Persistence<br/>EF Core DbContexts"]
-
-        P --> A
-        A --> R
-        R --> D
+        P --> A --> R --> D --> DB
     end
 
-    subgraph CORE["Domain"]
-        M["Entities<br/>Product, Order, Customer, ApplicationUser"]
+    subgraph SUPPORT["Support"]
+        direction LR
+        M["Domain<br>Entities"]
+        I["Infrastructure<br>Middleware, Helpers"]
     end
 
-    subgraph DB["PostgreSQL"]
-        N[(northwind)]
-        ID[(northwind_identity)]
-    end
+    A -.-> M
+    R -.-> M
+    D -.-> M
 
-    subgraph INF["Infrastructure"]
-        I["Middleware, Filters, Helpers, Extensions"]
-    end
-
-    U --> P
-
-    A -.uses.-> M
-    R -.queries.-> M
-    D -.maps.-> M
-
-    D --> N
-    D --> ID
-
-    I -.supports.-> P
-    I -.supports.-> A
-    I -.supports.-> D
+    I -.-> P
+    I -.-> A
+    I -.-> D
 ```
 
 # 4. Installation
