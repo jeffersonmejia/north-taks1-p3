@@ -68,24 +68,15 @@ flowchart LR
 
 ## 4.1 Prerequisites
 
-Install the following technologies before setting up the project.
-
 ### 4.1.1 Git
 
-**Debian:**
-```bash
-sudo apt update && sudo apt install -y git
-```
+a) **Debian** — `sudo apt update && sudo apt install -y git`
 
-**Windows:**
-Download the installer from [https://git-scm.com/download/win](https://git-scm.com/download/win) and run it with default options.
-
----
+b) **Windows** — Download the installer from [https://git-scm.com/download/win](https://git-scm.com/download/win) and run it with default options.
 
 ### 4.1.2 .NET SDK
 
-**Debian:**
-First register the Microsoft package repository:
+a) **Debian** — Register the Microsoft feed and install:
 
 ```bash
 wget -qO- https://packages.microsoft.com/keys/microsoft.asc | sudo tee /usr/share/keyrings/microsoft-prod.gpg > /dev/null
@@ -93,39 +84,21 @@ sudo wget -qO /etc/apt/sources.list.d/microsoft-prod.list https://packages.micro
 sudo apt update && sudo apt install -y dotnet-sdk-10.0
 ```
 
-For other Debian versions, follow the [official Microsoft instructions](https://learn.microsoft.com/dotnet/core/install/linux-debian).
+For other Debian versions, follow the [official instructions](https://learn.microsoft.com/dotnet/core/install/linux-debian).
 
-**Windows:**
-Download the **.NET SDK 10.0** installer from [https://dotnet.microsoft.com/en-us/download/dotnet/10.0](https://dotnet.microsoft.com/en-us/download/dotnet/10.0) and run it.
-
----
+b) **Windows** — Download the **.NET SDK 10.0** installer from [https://dotnet.microsoft.com/en-us/download/dotnet/10.0](https://dotnet.microsoft.com/en-us/download/dotnet/10.0) and run it.
 
 ### 4.1.3 PostgreSQL
 
-**Debian:**
+a) **Debian**
 ```bash
 sudo apt update
 sudo apt install -y postgresql postgresql-client
 sudo systemctl enable --now postgresql
-```
-
-Switch to the `postgres` user and set a password for the initial superuser:
-
-```bash
 sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'postgres';"
 ```
 
-**Windows:**
-
-1. Download the installer from [https://www.postgresql.org/download/windows/](https://www.postgresql.org/download/windows/).
-2. Run the installer and follow the wizard. When prompted:
-   - Set the superuser (`postgres`) password to `postgres`.
-   - Keep the default port `5432`.
-3. After installation, open **pgAdmin** or **SQL Shell (psql)** and verify the server is running.
-
-Enable `psql` in the terminal by adding PostgreSQL's `bin` directory to your `PATH` (typically `C:\Program Files\PostgreSQL\17\bin`).
-
----
+b) **Windows** — Download the installer from [https://www.postgresql.org/download/windows/](https://www.postgresql.org/download/windows/). Run it, set the superuser password to `postgres`, keep port `5432`. After installation, add `C:\Program Files\PostgreSQL\17\bin` to `PATH`.
 
 ## 4.2 Clone the repository
 
