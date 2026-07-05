@@ -4,31 +4,48 @@
     var totalPages = (int)Model.TotalPages;
     if (totalPages <= 1) return;
 
+    var neighbor = 2;
+
     string BuildUrl(int p)
     {
         var q = Context.Request.Query.ToDictionary(x => x.Key, x => x.Value.ToString());
         q["page"] = p.ToString();
         return "?" + string.Join("&", q.Select(kv => $"{Uri.EscapeDataString(kv.Key)}={Uri.EscapeDataString(kv.Value)}"));
     }
+
+    bool NeedsEllipsisAfterFirst() => page - neighbor > 2;
+    bool NeedsEllipsisBeforeLast() => page + neighbor < totalPages - 1;
 }
 <nav class="pagination">
     @if (page > 1)
     {
-        <a class="btn btn-ghost" href="@BuildUrl(page - 1)">Previous</a>
+        <a class="p-btn p-btn--prev" href="@BuildUrl(page - 1)" title="Previous page">&lsaquo;</a>
     }
-    @for (var i = 1; i <= totalPages; i++)
+
+    <a class="p-btn @(page == 1 ? "p-btn--active" : "")" href="@BuildUrl(1)">1</a>
+
+    @if (NeedsEllipsisAfterFirst())
     {
-        if (i == page)
-        {
-            <span class="pagination-current">@i</span>
-        }
-        else
-        {
-            <a class="btn btn-ghost" href="@BuildUrl(i)">@i</a>
-        }
+        <span class="p-ellipsis">&hellip;</span>
     }
+
+    @for (var i = Math.Max(2, page - neighbor); i <= Math.Min(totalPages - 1, page + neighbor); i++)
+    {
+        <a class="p-btn @(i == page ? "p-btn--active" : "")" href="@BuildUrl(i)">@i</a>
+    }
+
+    @if (NeedsEllipsisBeforeLast())
+    {
+        <span class="p-ellipsis">&hellip;</span>
+    }
+
+    @if (totalPages > 1)
+    {
+        <a class="p-btn @(page == totalPages ? "p-btn--active" : "")" href="@BuildUrl(totalPages)">@totalPages</a>
+    }
+
     @if (page < totalPages)
     {
-        <a class="btn btn-ghost" href="@BuildUrl(page + 1)">Next</a>
+        <a class="p-btn p-btn--next" href="@BuildUrl(page + 1)" title="Next page">&rsaquo;</a>
     }
 </nav>
