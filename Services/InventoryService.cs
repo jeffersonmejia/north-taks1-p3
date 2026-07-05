@@ -105,6 +105,19 @@ public class InventoryService(
         });
     }
 
+    public async Task<(bool Success, string Message, bool NewValue)> ToggleDiscontinuedAsync(int productId)
+    {
+        var product = await context.Products.FirstOrDefaultAsync(row => row.ProductId == productId);
+        if (product is null)
+            return (false, "Product does not exist.", false);
+
+        product.Discontinued = !product.Discontinued;
+        await context.SaveChangesAsync();
+        cache.InvalidateProducts();
+
+        return (true, product.Discontinued ? "Product discontinued." : "Product reactivated.", product.Discontinued);
+    }
+
     private static InventoryReportViewModel PageFromCache(IReadOnlyList<Models.Northwind.Product> all, int page, string title)
     {
         var items = all.Select(ProductService.ToListItem).ToList();

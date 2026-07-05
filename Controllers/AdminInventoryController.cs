@@ -31,6 +31,20 @@ public class AdminInventoryController(IInventoryService inventory) : Controller
     }
 
     [HttpGet]
+    public async Task<IActionResult> InventoryPartial(string filter = "all", int page = 1)
+    {
+        var model = filter switch
+        {
+            "low" => await inventory.GetLowStockAsync(page),
+            "out" => await inventory.GetOutOfStockAsync(page),
+            "discontinued" => await inventory.GetDiscontinuedAsync(page),
+            _ => await inventory.GetInventoryAsync(page)
+        };
+
+        return PartialView("~/Views/Admin/_InventoryList.cshtml", model);
+    }
+
+    [HttpGet]
     public async Task<IActionResult> UpdateStock(int productId, string operation = "increase")
     {
         var model = await inventory.GetStockUpdateAsync(productId, operation);
@@ -55,5 +69,31 @@ public class AdminInventoryController(IInventoryService inventory) : Controller
 
         TempData["Success"] = result.Message;
         return View("~/Views/Admin/UpdateStock.cshtml", result.Model);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> ToggleDiscontinued(int productId)
+    {
+        var (success, message, newValue) = await inventory.ToggleDiscontinuedAsync(productId);
+        return Json(new { success, message, newValue });
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> QuickAdjust(int productId, string operation)
+    {
+        var model = await inventory.GetStockUpdateAsync(productId, operation);
+        if (model is null)
+            return Json(new { success = false });
+
+        model.Quantity = 1;
+        var result = await inventory.UpdateStockAsync(model, User.Identity?.Name ?? "admin");
+
+        return Json(new
+        {
+            success = result.Success,
+            message = result.Message,
+            newStock = result.Model?.NewStock,
+            productName = result.Model?.ProductName
+        });
     }
 }

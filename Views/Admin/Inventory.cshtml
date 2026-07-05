@@ -4,13 +4,15 @@
 }
 <section class="glass-panel">
     <div class="admin-head">
-        <h1>@Model.Title</h1>
-        <div class="segmented">
-            <a asp-action="LowStock">Low</a>
-            <a asp-action="OutOfStock">No stock</a>
-            <a asp-action="Discontinued">Discontinued</a>
+        <h1 class="inv-title">@Model.Title</h1>
+        <div class="segmented" id="inv-filters">
+            <button type="button" class="seg-btn" data-filter="all">All</button>
+            <button type="button" class="seg-btn" data-filter="low">Low</button>
+            <button type="button" class="seg-btn" data-filter="out">No stock</button>
+            <button type="button" class="seg-btn" data-filter="discontinued">Discontinued</button>
         </div>
     </div>
-    <partial name="~/Views/Admin/_InventoryTable.cshtml" model="Model" />
-    <partial name="_Pagination" model="Model" />
+    <div id="inv-body">
+        <partial name="~/Views/Admin/_InventoryList.cshtml" model="Model" />
+    </div>
 </section>

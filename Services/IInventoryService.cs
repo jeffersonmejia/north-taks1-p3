@@ -10,4 +10,5 @@ public interface IInventoryService
     Task<InventoryReportViewModel> GetDiscontinuedAsync(int page = 1);
     Task<StockUpdateViewModel?> GetStockUpdateAsync(int productId, string operation);
     Task<(bool Success, string Message, StockUpdateViewModel? Model)> UpdateStockAsync(StockUpdateViewModel model, string adminName);
+    Task<(bool Success, string Message, bool NewValue)> ToggleDiscontinuedAsync(int productId);
 }

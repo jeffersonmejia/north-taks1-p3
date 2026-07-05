@@ -23,6 +23,16 @@ public class StatusController : Controller
             });
         }
 
+        if (statusCode == 404)
+        {
+            return View("~/Views/Status/NotFound.cshtml", new ErrorViewModel
+            {
+                TraceId = Activity.Current?.Id ?? HttpContext.TraceIdentifier,
+                IsDbError = false,
+                Message = "The page you are looking for does not exist."
+            });
+        }
+
         return View("~/Views/Shared/Error.cshtml", new ErrorViewModel
         {
             TraceId = Activity.Current?.Id ?? HttpContext.TraceIdentifier,

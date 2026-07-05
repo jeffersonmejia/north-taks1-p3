@@ -1,32 +1,19 @@
 @model NorthwindStore.Controllers.ErrorViewModel
 @{
-    ViewData["Title"] = Model.IsDbError ? "Service Unavailable" : "Error";
+    ViewData["Title"] = "Error";
 }
-
 <section class="glass-panel narrow fade-in error-page">
-    <div class="error-icon @(Model.IsDbError ? "db-error-icon" : string.Empty)">
-        @if (Model.IsDbError)
-        {
-            <img class="service-unavailable-image" src="~/images/service_unavailable.avif" alt="" />
-        }
-        else
-        {
-            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10" />
-                <line x1="12" y1="8" x2="12" y2="12" />
-                <line x1="12" y1="16" x2="12.01" y2="16" />
-            </svg>
-        }
+    <div class="error-icon">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
     </div>
-
-    <h1 class="error-title">@ViewData["Title"]</h1>
+    <h1 class="error-title">500 — Internal server error</h1>
     <p class="error-message">@Model.Message</p>
-
     <div class="error-actions">
         <a class="btn btn-primary" href="/">Go to home</a>
-        @if (!Model.IsDbError)
-        {
-            <button class="btn btn-secondary" onclick="location.reload()">Try again</button>
-        }
+        <button class="btn btn-ghost" onclick="location.reload()">Try again</button>
     </div>
 </section>

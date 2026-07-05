@@ -1,3 +1,37 @@
 .admin-head { display: flex; justify-content: space-between; gap: 16px; align-items: center; flex-wrap: wrap; }
-.segmented { display: flex; gap: 8px; flex-wrap: wrap; }
-.segmented a { padding: 9px 12px; border: 1px solid var(--stroke); border-radius: var(--radius); background: var(--surface); }
+
+.segmented {
+  display: inline-flex;
+  gap: 0;
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.segmented a, .seg-btn {
+  padding: 8px 18px;
+  border: none;
+  border-right: 1px solid var(--stroke);
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 180ms, color 180ms;
+}
+
+.segmented a:last-child, .seg-btn:last-child {
+  border-right: none;
+}
+
+.segmented a:hover, .seg-btn:hover {
+  background: var(--panel-strong);
+  color: var(--text);
+}
+
+.segmented a.active, .seg-btn.active {
+  background: var(--primary);
+  color: var(--on-primary);
+}
