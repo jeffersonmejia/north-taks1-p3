@@ -44,12 +44,12 @@ All service and repository interfaces sit next to their implementations.
 
 ```mermaid
 graph LR
-  P["Presentation<br/>Controllers, Views, ViewModels (DTOs)"]
-  App["Application<br/>Services — business logic, orchestration, cache"]
-  DAL["Data Access<br/>Repositories — LINQ queries, persistence"]
-  Per["Persistence<br/>DbContexts — EF Core, seeders"]
-  Dom["Domain<br/>Northwind entities, Identity user, value objects"]
-  XCut["Cross-Cutting<br/>Middleware, filters, extensions, helpers"]
+  P["Presentation<br/>8 Controllers → Razor Views ↔ ViewModels"]
+  App["Application<br/>Cart, Order, Product, Inventory, Cache, Session"]
+  DAL["Data Access<br/>ProductRepo, OrderRepo — LINQ, persistence"]
+  Per["Persistence<br/>NorthwindCtx, AppDbContext — EF Core, seeders"]
+  Dom["Domain<br/>Product, Order, Customer, OrderDetail, AppUser"]
+  XCut["Cross-Cutting<br/>SingleSession MW, ValidateCart, DI extensions"]
 
   P --> App --> DAL --> Per --> Dom
   XCut -.-> P
