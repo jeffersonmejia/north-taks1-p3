@@ -43,13 +43,13 @@ All service and repository interfaces sit next to their implementations.
 ## 3.1 Package diagram
 
 ```mermaid
-flowchart LR
-  P["Presentation<br/>Controllers / Views / ViewModels"]
-  App["Application<br/>Services"]
-  DAL["Data Access<br/>Repositories"]
-  Per["Persistence<br/>DbContexts / Seeders"]
-  Dom["Domain<br/>Entities / Value Objects"]
-  XCut["Cross-Cutting<br/>Middleware / Extensions"]
+flowchart TB
+  P["Presentation<br/>Controllers → Views ↔ ViewModels"]
+  App["Application<br/>Services → business logic, orchestration, cache"]
+  DAL["Data Access<br/>Repositories → LINQ queries, persistence"]
+  Per["Persistence<br/>DbContexts → EF Core + Seeders"]
+  Dom["Domain<br/>Northwind entities, Identity, Value Objects"]
+  XCut["Cross-Cutting<br/>Middleware, Filters, Extensions, Helpers"]
 
   P --> App --> DAL --> Per --> Dom
   XCut -.-> P
