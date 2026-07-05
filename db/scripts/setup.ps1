@@ -1,4 +1,8 @@
-$ROOT = Join-Path (Split-Path $PSScriptRoot -Parent)
+$ROOT = Split-Path (Split-Path $PSScriptRoot -Parent)
+
+Write-Host "=== Dropping databases (if they exist) ==="
+& psql -c "DROP DATABASE IF EXISTS northwind;"
+& psql -c "DROP DATABASE IF EXISTS northwind_identity;"
 
 Write-Host "=== Creating databases ==="
 & createdb northwind
