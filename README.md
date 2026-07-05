@@ -66,49 +66,43 @@ flowchart LR
 
 # 4. Installation
 
-## 4.1 Clone the repository
+## 4.1 Prerequisites
+
+Install the following technologies before setting up the project.
+
+### 4.1.1 Git
+
+**Debian:**
+```bash
+sudo apt update && sudo apt install -y git
+```
+
+**Windows:**
+Download the installer from [https://git-scm.com/download/win](https://git-scm.com/download/win) and run it with default options.
+
+---
+
+### 4.1.2 .NET SDK
+
+**Debian:**
+First register the Microsoft package repository:
 
 ```bash
-git clone <repository-url>
-cd <repository-folder>
+wget -qO- https://packages.microsoft.com/keys/microsoft.asc | sudo tee /usr/share/keyrings/microsoft-prod.gpg > /dev/null
+sudo wget -qO /etc/apt/sources.list.d/microsoft-prod.list https://packages.microsoft.com/config/debian/13/prod.list
+sudo apt update && sudo apt install -y dotnet-sdk-10.0
 ```
 
-## 4.2 Create the application database user
+For other Debian versions, follow the [official Microsoft instructions](https://learn.microsoft.com/dotnet/core/install/linux-debian).
 
-Run the credentials script against both databases:
+**Windows:**
+Download the **.NET SDK 10.0** installer from [https://dotnet.microsoft.com/en-us/download/dotnet/10.0](https://dotnet.microsoft.com/en-us/download/dotnet/10.0) and run it.
 
-```bash
-psql -d northwind          -f db/credentials.sql
-psql -d northwind_identity -f db/credentials.sql
-```
+---
 
-This creates the `jef` role with a hashed password and grants the required privileges.
+### 4.1.3 PostgreSQL
 
-## 4.3 Configure database credentials
-
-The application reads PostgreSQL credentials from `Secrets/secrets.json`. The file is already prepared for the local setup:
-
-```json
-{
-  "ConnectionStrings": {
-    "NorthwindConnection": "Host=localhost;Port=5432;Database=northwind;Username=jef;Password=<your-password>;Pooling=true;Minimum Pool Size=0;Maximum Pool Size=100;Connection Idle Lifetime=300",
-    "IdentityConnection": "Host=localhost;Port=5432;Database=northwind_identity;Username=jef;Password=<your-password>;Pooling=true;Minimum Pool Size=0;Maximum Pool Size=50;Connection Idle Lifetime=300"
-  }
-}
-```
-
-`Secrets/secrets.json` is listed in `.gitignore` so it stays local and is never committed. `appsettings.json` does not store database passwords. Connection pooling is enabled in the connection strings with `Pooling=true`, `Minimum Pool Size`, `Maximum Pool Size`, and `Connection Idle Lifetime`.
-
-## 4.4 Restore packages
-
-```bash
-dotnet restore
-```
-
-## 4.5 Prepare PostgreSQL
-
-### 4.5.1 Install PostgreSQL on Debian
-
+**Debian:**
 ```bash
 sudo apt update
 sudo apt install -y postgresql postgresql-client
@@ -121,7 +115,7 @@ Switch to the `postgres` user and set a password for the initial superuser:
 sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'postgres';"
 ```
 
-### 4.5.2 Install PostgreSQL on Windows
+**Windows:**
 
 1. Download the installer from [https://www.postgresql.org/download/windows/](https://www.postgresql.org/download/windows/).
 2. Run the installer and follow the wizard. When prompted:
@@ -131,16 +125,42 @@ sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'postgres';"
 
 Enable `psql` in the terminal by adding PostgreSQL's `bin` directory to your `PATH` (typically `C:\Program Files\PostgreSQL\17\bin`).
 
-### 4.5.3 Create the databases and load the schema
+---
 
-Create the Northwind and Identity databases:
+## 4.2 Clone the repository
+
+```bash
+git clone https://github.com/jeffersonmejia/north-taks1-p3
+cd north-taks1-p3
+```
+
+## 4.3 Restore NuGet packages
+
+```bash
+dotnet restore
+```
+
+## 4.4 Set up the database
+
+### 4.4.1 Create the databases
 
 ```bash
 createdb northwind
 createdb northwind_identity
 ```
 
-Then run the schema, seed and index files:
+### 4.4.2 Create the application database user
+
+Run the credentials script against both databases:
+
+```bash
+psql -d northwind          -f db/credentials.sql
+psql -d northwind_identity -f db/credentials.sql
+```
+
+This creates the `jef` role with a hashed password and grants the required privileges.
+
+### 4.4.3 Load the schema, seed data, and indexes
 
 ```bash
 psql -d northwind -f db/schema.sql
@@ -148,17 +168,7 @@ psql -d northwind -f db/seed.sql
 psql -d northwind -f db/index.sql
 ```
 
-### 4.5.4 Scaffold the models (Database First)
-
-Generate the Northwind models from the live PostgreSQL database:
-
-```bash
-dotnet ef dbcontext scaffold "Host=localhost;Port=5432;Database=northwind;Username=jef;Password=<your-password>;Pooling=true;Minimum Pool Size=0;Maximum Pool Size=100;Connection Idle Lifetime=300" Npgsql.EntityFrameworkCore.PostgreSQL --context NorthwindContext --context-dir Data --output-dir Models/Northwind --force --use-database-names
-```
-
-After scaffolding, keep the soft-delete columns from `db/schema.sql`. The app uses query filters for `is_deleted`, `deleted_at`, and `deleted_by`.
-
-### 4.5.5 Database indexes
+### 4.4.4 Database indexes
 
 Performance indexes are defined in `db/index.sql` (run separately after the schema). They include:
 
@@ -172,6 +182,33 @@ Performance indexes are defined in `db/index.sql` (run separately after the sche
 | `ix_orders_customer_date` | `customer_id`, `order_date` (partial, `is_deleted = false`) | Fast customer order history and sorting |
 
 The trigram index requires the `pg_trgm` extension, which is enabled by `db/index.sql`.
+
+### 4.4.5 Scaffold the models (Database First)
+
+Generate the Northwind models from the live PostgreSQL database:
+
+```bash
+dotnet ef dbcontext scaffold "Host=localhost;Port=5432;Database=northwind;Username=jef;Password=<your-password>;Pooling=true;Minimum Pool Size=0;Maximum Pool Size=100;Connection Idle Lifetime=300" Npgsql.EntityFrameworkCore.PostgreSQL --context NorthwindContext --context-dir Data --output-dir Models/Northwind --force --use-database-names
+```
+
+After scaffolding, keep the soft-delete columns from `db/schema.sql`. The app uses query filters for `is_deleted`, `deleted_at`, and `deleted_by`.
+
+## 4.5 Configure secrets
+
+The application reads PostgreSQL credentials from `Secrets/secrets.json`. Create or edit the file with your database password:
+
+```json
+{
+  "ConnectionStrings": {
+    "NorthwindConnection": "Host=localhost;Port=5432;Database=northwind;Username=jef;Password=<your-password>;Pooling=true;Minimum Pool Size=0;Maximum Pool Size=100;Connection Idle Lifetime=300",
+    "IdentityConnection": "Host=localhost;Port=5432;Database=northwind_identity;Username=jef;Password=<your-password>;Pooling=true;Minimum Pool Size=0;Maximum Pool Size=50;Connection Idle Lifetime=300"
+  }
+}
+```
+
+Replace `<your-password>` with the password set by `db/credentials.sql`.
+
+`Secrets/secrets.json` is listed in `.gitignore` so it stays local and is never committed. `appsettings.json` does not store database passwords.
 
 ## 4.6 Run the project
 
