@@ -72,17 +72,88 @@ flowchart LR
     I -.-> D
 ```
 
-# 4. Installation
+# 4. Protected Routes
 
-## 4.1 Prerequisites
+The root route `/` is a neutral home page and does not expose product, inventory, order, or customer data.
 
-### 4.1.1 Git
+| Area            | Controller                                            | Access                     |
+| --------------- | ----------------------------------------------------- | -------------------------- |
+| Home            | `HomeController.Index`                                | Public                     |
+| Authentication  | `AccountController.Login`, `Register`, `AccessDenied` | Public                     |
+| Products        | `ProductsController.Index`, `Details`                 | `Customer` only            |
+| Cart            | `CartController`                                      | `Customer` only            |
+| Customer orders | `OrdersController`                                    | `Customer` only            |
+| Admin inventory | `AdminInventoryController`                            | `Admin` only               |
+| Admin orders    | `AdminOrdersController`                               | `Admin` only               |
+| Status pages    | `StatusController`                                    | Public/internal error flow |
+
+The navbar follows the same rules: product/cart/order links appear only for `Customer`, while inventory/order administration links appear only for `Admin`.
+
+# 5. Logging
+
+Logging is configured with **Serilog** in `Infrastructure/Extensions/LoggingExtensions.cs`.
+
+Detailed request/database logs are enabled only when `ASPNETCORE_ENVIRONMENT=Development`.
+In non-development environments, the app writes only `Warning` and higher events to the console and does not create `logs/app-*.json` files. This avoids filling disk and slowing down production with high-volume EF query logs.
+
+Development sinks:
+
+| Output              | Configuration                                                      |
+| ------------------- | ------------------------------------------------------------------ |
+| Console             | `.WriteTo.Console()`                                               |
+| Rolling file (JSON) | `.WriteTo.File(new CompactJsonFormatter(), "logs/app-.json", ...)` |
+
+Development file rolling policy:
+
+| Setting                  | Value  | Description                                                       |
+| ------------------------ | ------ | ----------------------------------------------------------------- |
+| `rollingInterval`        | `Day`  | Creates a new file each day (`app-20260704.log`)                  |
+| `fileSizeLimitBytes`     | 10 MB  | Rotates early if a file exceeds this size                         |
+| `rollOnFileSizeLimit`    | `true` | Enables size-based rotation in addition to daily                  |
+| `retainedFileCountLimit` | 7      | Keeps only the last 7 files, older ones are deleted automatically |
+
+File format (compact JSON, one event per line):
+
+| Property | Description                           |
+| -------- | ------------------------------------- |
+| `@t`     | Timestamp (ISO 8601)                  |
+| `@mt`    | Message template                      |
+| `@l`     | Level (`INF`, `WRN`, `ERR`, `FTL`)    |
+| `@x`     | Exception details (present on errors) |
+| `@m`     | Rendered message                      |
+
+Example line:
+
+```json
+{
+  "@t": "2026-07-04T15:29:46.316Z",
+  "@mt": "Database operation failed",
+  "@l": "ERROR",
+  "@x": "Npgsql.PostgresException: 42501: permission denied..."
+}
+```
+
+Query examples:
+
+```bash
+# Filter errors only
+jq 'select(.["@l"] == "ERR")' logs/app-*.json
+
+# Search for a specific message
+jq 'select(.["@mt"] | test("product"))' logs/app-*.json
+```
+
+# 6. Installation
+
+## 6.1 Prerequisites
+
+### 6.1.1 Git
 
 a) **Debian** — `sudo apt update && sudo apt install -y git`
 
 b) **Windows** — Download the installer from [https://git-scm.com/download/win](https://git-scm.com/download/win) and run it with default options.
 
-### 4.1.2 .NET SDK
+### 6.1.2 .NET SDK
 
 a) **Debian** — Register the Microsoft feed and install:
 
@@ -96,7 +167,7 @@ For other Debian versions, follow the [official instructions](https://learn.micr
 
 b) **Windows** — Download the **.NET SDK 10.0** installer from [https://dotnet.microsoft.com/en-us/download/dotnet/10.0](https://dotnet.microsoft.com/en-us/download/dotnet/10.0) and run it.
 
-### 4.1.3 PostgreSQL
+### 6.1.3 PostgreSQL
 
 a) **Debian**
 
@@ -109,29 +180,29 @@ sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'postgres';"
 
 b) **Windows** — Download the installer from [https://www.postgresql.org/download/windows/](https://www.postgresql.org/download/windows/). Run it, set the superuser password to `postgres`, keep port `5432`. After installation, add `C:\Program Files\PostgreSQL\17\bin` to `PATH`.
 
-## 4.2 Clone the repository
+## 6.2 Clone the repository
 
 ```bash
 git clone https://github.com/jeffersonmejia/north-taks1-p3
 cd north-taks1-p3
 ```
 
-## 4.3 Restore NuGet packages
+## 6.3 Restore NuGet packages
 
 ```bash
 dotnet restore
 ```
 
-## 4.4 Set up the database
+## 6.4 Set up the database
 
-### 4.4.1 Create the databases
+### 6.4.1 Create the databases
 
 ```bash
 createdb northwind
 createdb northwind_identity
 ```
 
-### 4.4.2 Create the application database user
+### 6.4.2 Create the application database user
 
 Run the credentials script against both databases:
 
@@ -142,7 +213,7 @@ psql -d northwind_identity -f db/credentials.sql
 
 This creates the `jef` role with a hashed password and grants the required privileges.
 
-### 4.4.3 Load the schema, seed data, and indexes
+### 6.4.3 Load the schema, seed data, and indexes
 
 ```bash
 psql -d northwind -f db/schema.sql
@@ -150,7 +221,7 @@ psql -d northwind -f db/seed.sql
 psql -d northwind -f db/index.sql
 ```
 
-### 4.4.4 Database indexes
+### 6.4.4 Database indexes
 
 Performance indexes are defined in `db/index.sql` (run separately after the schema). They include:
 
@@ -165,7 +236,7 @@ Performance indexes are defined in `db/index.sql` (run separately after the sche
 
 The trigram index requires the `pg_trgm` extension, which is enabled by `db/index.sql`.
 
-### 4.4.5 Scaffold the models (Database First)
+### 6.4.5 Scaffold the models (Database First)
 
 Generate the Northwind models from the live PostgreSQL database:
 
@@ -175,7 +246,7 @@ dotnet ef dbcontext scaffold "Host=localhost;Port=5432;Database=northwind;Userna
 
 After scaffolding, keep the soft-delete columns from `db/schema.sql`. The app uses query filters for `is_deleted`, `deleted_at`, and `deleted_by`.
 
-## 4.5 Configure secrets
+## 6.5 Configure secrets
 
 The application reads PostgreSQL credentials from `Secrets/secrets.json`. Create or edit the file with your database password:
 
@@ -192,7 +263,7 @@ Replace `<your-password>` with the password set by `db/credentials.sql`.
 
 `Secrets/secrets.json` is listed in `.gitignore` so it stays local and is never committed. `appsettings.json` does not store database passwords.
 
-## 4.6 Run the project
+## 6.6 Run the project
 
 ```bash
 dotnet run
@@ -206,7 +277,7 @@ dotnet watch run
 
 When the app starts, `IdentitySeeder` creates the `Admin`, `Customer`, and `Employee` roles. `Employee` is kept for compatibility with previous academic work; this project protects the required routes with `Admin` and `Customer`.
 
-## 4.7 Default admin user
+## 6.7 Default admin user
 
 The identity seed creates a default academic admin account:
 
@@ -224,26 +295,7 @@ To apply or repair this admin user in an existing `northwind_identity` database 
 psql -d postgres -f db/identity_admin_seed.sql
 ```
 
-## 4.8 Protected routes
-
-The root route `/` is a neutral home page and does not expose product, inventory, order, or customer data.
-
-Protected MVC routes:
-
-| Area            | Controller                                            | Access                     |
-| --------------- | ----------------------------------------------------- | -------------------------- |
-| Home            | `HomeController.Index`                                | Public                     |
-| Authentication  | `AccountController.Login`, `Register`, `AccessDenied` | Public                     |
-| Products        | `ProductsController.Index`, `Details`                 | `Customer` only            |
-| Cart            | `CartController`                                      | `Customer` only            |
-| Customer orders | `OrdersController`                                    | `Customer` only            |
-| Admin inventory | `AdminInventoryController`                            | `Admin` only               |
-| Admin orders    | `AdminOrdersController`                               | `Admin` only               |
-| Status pages    | `StatusController`                                    | Public/internal error flow |
-
-The navbar follows the same rules: product/cart/order links appear only for `Customer`, while inventory/order administration links appear only for `Admin`.
-
-## 4.9 Publish in Release mode
+## 6.8 Publish in Release mode
 
 ```bash
 dotnet publish -c Release -o ./publish
@@ -254,8 +306,6 @@ The `publish` folder contains the compiled application. Run it with:
 ```bash
 dotnet ./publish/NorthwindStore.dll
 ```
-
-# 5. Logging
 
 Logging is configured with **Serilog** in `Infrastructure/Extensions/LoggingExtensions.cs`.
 
