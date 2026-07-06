@@ -1,43 +1,49 @@
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using NorthwindStore.Models.Common;
+﻿using System;
+using System.Collections.Generic;
 
 namespace NorthwindStore.Models.Northwind;
 
-public class Order : SoftDeleteEntity
+public partial class Order
 {
-    [Key]
-    [Column("order_id")]
     public int OrderId { get; set; }
 
-    [Column("customer_id")]
-    [StringLength(5)]
     public string? CustomerId { get; set; }
 
-    [Column("employee_id")]
     public int? EmployeeId { get; set; }
 
-    [Column("order_date")]
-    public DateTime? OrderDate { get; set; }
+    public DateOnly? OrderDate { get; set; }
 
-    [Column("required_date")]
-    public DateTime? RequiredDate { get; set; }
+    public DateOnly? RequiredDate { get; set; }
 
-    [Column("shipped_date")]
-    public DateTime? ShippedDate { get; set; }
+    public DateOnly? ShippedDate { get; set; }
 
-    [Column("ship_name")]
-    [StringLength(40)]
+    public int? ShipVia { get; set; }
+
+    public decimal? Freight { get; set; }
+
     public string? ShipName { get; set; }
 
-    [Column("ship_address")]
-    [StringLength(60)]
     public string? ShipAddress { get; set; }
 
-    [Column("ship_city")]
-    [StringLength(15)]
     public string? ShipCity { get; set; }
 
-    public Customer? Customer { get; set; }
-    public ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
+    public string? ShipRegion { get; set; }
+
+    public string? ShipPostalCode { get; set; }
+
+    public string? ShipCountry { get; set; }
+
+    public bool IsDeleted { get; set; }
+
+    public DateTime? DeletedAt { get; set; }
+
+    public string? DeletedBy { get; set; }
+
+    public virtual Customer? Customer { get; set; }
+
+    public virtual Employee? Employee { get; set; }
+
+    public virtual ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
+
+    public virtual Shipper? ShipViaNavigation { get; set; }
 }

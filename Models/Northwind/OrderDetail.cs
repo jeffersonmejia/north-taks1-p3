@@ -1,24 +1,21 @@
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.Collections.Generic;
 
 namespace NorthwindStore.Models.Northwind;
 
-public class OrderDetail
+public partial class OrderDetail
 {
-    [Column("order_id")]
     public int OrderId { get; set; }
 
-    [Column("product_id")]
     public int ProductId { get; set; }
 
-    [Column("unit_price")]
     public decimal UnitPrice { get; set; }
 
-    [Column("quantity")]
     public short Quantity { get; set; }
 
-    [Column("discount")]
     public float Discount { get; set; }
 
-    public Order? Order { get; set; }
-    public Product? Product { get; set; }
+    public virtual Order Order { get; set; } = null!;
+
+    public virtual Product Product { get; set; } = null!;
 }

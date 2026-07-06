@@ -35,8 +35,8 @@ public class OrderService(
             var order = new Order
             {
                 CustomerId = user.CustomerId,
-                OrderDate = DateTime.UtcNow,
-                RequiredDate = DateTime.UtcNow.AddDays(7),
+                OrderDate = DateOnly.FromDateTime(DateTime.UtcNow),
+                RequiredDate = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(7)),
                 ShipName = user.FullName ?? user.Email,
                 ShipCity = "Online"
             };
@@ -122,7 +122,7 @@ public class OrderService(
         {
             OrderId = order.OrderId,
             CustomerId = order.CustomerId,
-            OrderDate = order.OrderDate,
+            OrderDate = order.OrderDate?.ToDateTime(TimeOnly.MinValue),
             Lines = order.OrderDetails.Select(detail => new OrderLineViewModel
             {
                 ProductId = detail.ProductId,
@@ -140,7 +140,7 @@ public class OrderService(
         {
             OrderId = order.OrderId,
             CustomerId = order.CustomerId,
-            OrderDate = order.OrderDate,
+            OrderDate = order.OrderDate?.ToDateTime(TimeOnly.MinValue),
             TotalProducts = order.OrderDetails.Sum(detail => detail.Quantity),
             Total = order.OrderDetails.Sum(detail => detail.UnitPrice * detail.Quantity * (decimal)(1 - detail.Discount))
         };

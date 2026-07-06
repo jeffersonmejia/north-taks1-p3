@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace NorthwindStore.Models.Northwind;
 
-public partial class Customer
+public partial class Supplier
 {
-    public string CustomerId { get; set; } = null!;
+    public int SupplierId { get; set; }
 
     public string CompanyName { get; set; } = null!;
 
@@ -27,13 +27,7 @@ public partial class Customer
 
     public string? Fax { get; set; }
 
-    public bool IsDeleted { get; set; }
+    public string? Homepage { get; set; }
 
-    public DateTime? DeletedAt { get; set; }
-
-    public string? DeletedBy { get; set; }
-
-    public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
-
-    public virtual ICollection<CustomerDemographic> CustomerTypes { get; set; } = new List<CustomerDemographic>();
+    public virtual ICollection<Product> Products { get; set; } = new List<Product>();
 }

@@ -1,43 +1,39 @@
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using NorthwindStore.Models.Common;
+﻿using System;
+using System.Collections.Generic;
 
 namespace NorthwindStore.Models.Northwind;
 
-public class Product : SoftDeleteEntity
+public partial class Product
 {
-    [Key]
-    [Column("product_id")]
     public int ProductId { get; set; }
 
-    [Column("product_name")]
-    [StringLength(40)]
-    public string ProductName { get; set; } = string.Empty;
+    public string ProductName { get; set; } = null!;
 
-    [Column("supplier_id")]
     public int? SupplierId { get; set; }
 
-    [Column("category_id")]
     public int? CategoryId { get; set; }
 
-    [Column("quantity_per_unit")]
-    [StringLength(20)]
     public string? QuantityPerUnit { get; set; }
 
-    [Column("unit_price")]
     public decimal? UnitPrice { get; set; }
 
-    [Column("units_in_stock")]
     public short? UnitsInStock { get; set; }
 
-    [Column("units_on_order")]
     public short? UnitsOnOrder { get; set; }
 
-    [Column("reorder_level")]
     public short? ReorderLevel { get; set; }
 
-    [Column("discontinued")]
     public bool Discontinued { get; set; }
 
-    public ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
+    public bool IsDeleted { get; set; }
+
+    public DateTime? DeletedAt { get; set; }
+
+    public string? DeletedBy { get; set; }
+
+    public virtual Category? Category { get; set; }
+
+    public virtual ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
+
+    public virtual Supplier? Supplier { get; set; }
 }
