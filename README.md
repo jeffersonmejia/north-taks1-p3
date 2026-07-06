@@ -307,3 +307,43 @@ The `publish` folder contains the compiled application. Run it with:
 dotnet ./publish/NorthwindStore.dll
 ```
 
+# 7. Application Flow
+
+```mermaid
+flowchart TD
+    Start((Inicio)) --> Home[Home Page<br>/]
+    Home --> Auth{¿Autenticado?}
+
+    Auth -->|No| Login[Login / Register]
+    Login --> Home
+
+    Auth -->|Sí| Role{¿Rol?}
+
+    Role -->|Customer| Browse[Explorar Productos<br>/Products]
+    Browse --> Cart[Agregar al Carrito<br>/Cart]
+    Cart --> Checkout[Crear Orden<br>/Orders]
+    Checkout --> UpdateStock[Actualizar Stock<br>InventoryService]
+    UpdateStock --> Notify{¿Stock bajo?}
+    Notify -->|Sí| LogWarning[Log Warning]
+    Notify -->|No| DoneOrder[Orden Completada]
+
+    Role -->|Admin| Dashboard[Panel Admin]
+    Dashboard --> InvMgmt[Gestión Inventario<br>/AdminInventory]
+    Dashboard --> OrderMgmt[Gestión Órdenes<br>/AdminOrders]
+    InvMgmt --> LowStock[Alertas Stock Bajo]
+    OrderMgmt --> ShipOrder[Despachar Órdenes]
+
+    subgraph BACK["Backend Pipeline"]
+        C[Controller] --> S[Service]
+        S --> R[Repository]
+        R --> DB[(PostgreSQL)]
+        S --> Cache[MemoryCache]
+    end
+
+    Browse -.-> BACK
+    Checkout -.-> BACK
+    InvMgmt -.-> BACK
+```
+
+El flujo comienza en la página principal, bifurca según autenticación y rol, y finalmente procesa las operaciones contra la base de datos a través de la arquitectura en capas.
+
